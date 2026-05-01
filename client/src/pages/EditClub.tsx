@@ -247,17 +247,17 @@ export default function EditClub({ params }: EditClubProps) {
                   </div>
 
                   <div className="space-y-1.5">
-                    <Label>Instagram URL</Label>
+                    <Label>Instagram URL (optional)</Label>
                     <Input placeholder="https://instagram.com/yourclub" {...register("instagramUrl")} />
                   </div>
 
                   <div className="space-y-1.5">
-                    <Label>WhatsApp Group Link</Label>
+                    <Label>WhatsApp Group Link (optional)</Label>
                     <Input placeholder="https://chat.whatsapp.com/..." {...register("whatsappUrl")} />
                   </div>
 
                   <div className="space-y-1.5">
-                    <Label>Website URL</Label>
+                    <Label>Website URL (optional)</Label>
                     <Input placeholder="https://yourclub.com" {...register("websiteUrl")} />
                   </div>
 

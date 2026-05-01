@@ -53,7 +53,7 @@ export default function Home() {
             {/* Eyebrow */}
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-semibold mb-6">
               <Zap className="w-3.5 h-3.5" />
-              TreadGram — Your Sports Tribe
+              Treadgram — Your Sports Tribe
             </div>
 
             <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight mb-6">
@@ -61,11 +61,12 @@ export default function Home() {
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                 Perfect Club
               </span>{" "}
-              Across India
+              on Treadgram
             </h1>
 
             <p className="text-lg text-muted-foreground leading-relaxed mb-10 max-w-2xl mx-auto">
-              Discover running clubs, cycling groups, yoga studios, football teams, and more sports communities in your city. Join, connect, and train together.
+              Treadgram helps you find running clubs, cycling groups, yoga studios, football teams, and more sports
+              communities in your city across India. Join, connect, and train together.
             </p>
 
             {/* Search bar */}
@@ -197,10 +198,10 @@ export default function Home() {
       <section className="py-16 bg-primary text-primary-foreground">
         <div className="container text-center">
           <h2 className="font-display text-3xl font-bold mb-4">
-            Run a Sports Club in India?
+            Run a sports club?
           </h2>
           <p className="text-primary-foreground/80 text-lg mb-8 max-w-xl mx-auto">
-            List your club for free and connect with thousands of sports enthusiasts across India.
+            List your club for free on Treadgram and connect with sports enthusiasts across India.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button size="lg" variant="secondary" asChild className="gap-2">

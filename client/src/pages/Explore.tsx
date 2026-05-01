@@ -58,7 +58,7 @@ export default function Explore() {
 
   const pageTitle = [cityLabel, sportLabel ? `${sportLabel} Clubs` : null]
     .filter(Boolean)
-    .join(" — ") || "Explore Sports Clubs";
+    .join(" — ") || "Explore clubs on Treadgram";
 
   return (
     <div className="min-h-screen bg-background">

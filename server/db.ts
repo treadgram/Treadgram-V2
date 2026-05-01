@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, gt, ilike, like, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gt, ilike, like, lte, or, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import {
@@ -25,12 +25,14 @@ let _pool: Pool | null = null;
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
-      const needsRelaxedSsl =
-        process.env.DATABASE_URL.includes("pooler.supabase.com") &&
-        process.env.NODE_ENV !== "production";
+      const connectionString = process.env.DATABASE_URL;
+      const parsedUrl = new URL(connectionString);
+      const isLocalDb = parsedUrl.hostname === "localhost" || parsedUrl.hostname === "127.0.0.1";
+      const needsRelaxedSsl = !isLocalDb && process.env.NODE_ENV !== "production";
       _pool = new Pool({
-        connectionString: process.env.DATABASE_URL,
-        ssl: needsRelaxedSsl ? { rejectUnauthorized: false } : undefined,
+        connectionString,
+        options: "-c search_path=public",
+        ssl: needsRelaxedSsl ? { rejectUnauthorized: false } : false,
       });
       _db = drizzle(_pool);
     } catch (error) {
@@ -51,7 +53,7 @@ export async function upsertUser(user: InsertUser): Promise<void> {
 
   const values: InsertUser = { openId: user.openId };
   const updateSet: Record<string, unknown> = {};
-  const textFields = ["name", "email", "loginMethod"] as const;
+  const textFields = ["name", "email", "phone", "passwordHash", "loginMethod"] as const;
 
   for (const field of textFields) {
     const value = user[field];
@@ -113,6 +115,74 @@ export async function getUserById(id: number) {
   if (!db) return undefined;
   const result = await db.select().from(users).where(eq(users.id, id)).limit(1);
   return result[0];
+}
+
+export async function listRecentUsers(limit = 25) {
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select({
+      id: users.id,
+      name: users.name,
+      email: users.email,
+      phone: users.phone,
+      createdAt: users.createdAt,
+      loginMethod: users.loginMethod,
+    })
+    .from(users)
+    .orderBy(desc(users.createdAt))
+    .limit(limit);
+}
+
+export interface AdminUserListFilters {
+  page?: number;
+  limit?: number;
+  search?: string;
+  role?: "user" | "admin" | "moderator";
+}
+
+export async function listAllUsers(filters: AdminUserListFilters = {}) {
+  const db = await getDb();
+  if (!db) return { users: [], total: 0 };
+  const page = filters.page ?? 1;
+  const limit = Math.min(filters.limit ?? 50, 100);
+  const offset = (page - 1) * limit;
+  const conditions = [];
+  if (filters.role) conditions.push(eq(users.role, filters.role));
+  if (filters.search?.trim()) {
+    const q = `%${filters.search.trim()}%`;
+    conditions.push(
+      or(
+        ilike(users.email, q),
+        ilike(users.name, q),
+        ilike(users.openId, q),
+        ilike(users.phone, q)
+      )!
+    );
+  }
+  const where = conditions.length ? and(...conditions) : undefined;
+  const [rows, countRows] = await Promise.all([
+    db
+      .select({
+        id: users.id,
+        openId: users.openId,
+        name: users.name,
+        email: users.email,
+        phone: users.phone,
+        role: users.role,
+        loginMethod: users.loginMethod,
+        createdAt: users.createdAt,
+        updatedAt: users.updatedAt,
+        lastSignedIn: users.lastSignedIn,
+      })
+      .from(users)
+      .where(where)
+      .orderBy(desc(users.createdAt))
+      .limit(limit)
+      .offset(offset),
+    db.select({ count: sql<number>`count(*)` }).from(users).where(where),
+  ]);
+  return { users: rows, total: Number(countRows[0]?.count ?? 0) };
 }
 
 // ─── Clubs ────────────────────────────────────────────────────────────────────
@@ -441,13 +511,119 @@ export async function getClubsBySubmitter(userId: number) {
   return db.select().from(clubs).where(eq(clubs.submittedBy, userId)).orderBy(desc(clubs.createdAt));
 }
 
-export async function listAllClubsForAdmin(page = 1, limit = 20) {
+export interface AdminClubListFilters {
+  page?: number;
+  limit?: number;
+  status?: "pending" | "approved" | "rejected";
+  verified?: boolean;
+  search?: string;
+  city?: string;
+  sport?: string;
+}
+
+export async function listClubsForAdmin(filters: AdminClubListFilters = {}) {
   const db = await getDb();
   if (!db) return { clubs: [], total: 0 };
+  const page = filters.page ?? 1;
+  const limit = Math.min(filters.limit ?? 20, 100);
   const offset = (page - 1) * limit;
+  const conditions = [];
+  if (filters.status) conditions.push(eq(clubs.status, filters.status));
+  if (filters.verified !== undefined) conditions.push(eq(clubs.verified, filters.verified));
+  if (filters.city?.trim()) {
+    const c = `%${filters.city.trim()}%`;
+    conditions.push(or(ilike(clubs.city, c), ilike(clubs.cityLabel, c))!);
+  }
+  if (filters.sport?.trim()) {
+    const s = `%${filters.sport.trim()}%`;
+    conditions.push(or(ilike(clubs.sport, s), ilike(clubs.sportLabel, s))!);
+  }
+  if (filters.search?.trim()) {
+    const q = `%${filters.search.trim()}%`;
+    conditions.push(
+      or(
+        ilike(clubs.name, q),
+        ilike(clubs.slug, q),
+        ilike(clubs.cityLabel, q),
+        ilike(clubs.sportLabel, q),
+        ilike(clubs.shortDescription, q),
+        ilike(clubs.address, q)
+      )!
+    );
+  }
+  const where = conditions.length ? and(...conditions) : undefined;
   const [rows, countRows] = await Promise.all([
-    db.select().from(clubs).orderBy(desc(clubs.createdAt)).limit(limit).offset(offset),
-    db.select({ count: sql<number>`count(*)` }).from(clubs),
+    db.select().from(clubs).where(where).orderBy(desc(clubs.createdAt)).limit(limit).offset(offset),
+    db.select({ count: sql<number>`count(*)` }).from(clubs).where(where),
   ]);
   return { clubs: rows, total: Number(countRows[0]?.count ?? 0) };
+}
+
+export interface AdminEventListFilters {
+  page?: number;
+  limit?: number;
+  clubId?: number;
+  search?: string;
+  isOpen?: boolean;
+  timeRange?: "all" | "upcoming" | "past";
+}
+
+export async function listEventsForAdmin(filters: AdminEventListFilters = {}) {
+  const db = await getDb();
+  if (!db) return { events: [], total: 0 };
+  const page = filters.page ?? 1;
+  const limit = Math.min(filters.limit ?? 20, 100);
+  const offset = (page - 1) * limit;
+  const now = new Date();
+  const conditions = [];
+  if (filters.clubId) conditions.push(eq(events.clubId, filters.clubId));
+  if (filters.isOpen !== undefined) conditions.push(eq(events.isOpen, filters.isOpen));
+  const timeRange = filters.timeRange ?? "all";
+  if (timeRange === "upcoming") conditions.push(gt(events.datetimeUtc, now));
+  if (timeRange === "past") conditions.push(lte(events.datetimeUtc, now));
+  if (filters.search?.trim()) {
+    const q = `%${filters.search.trim()}%`;
+    conditions.push(
+      or(
+        ilike(events.title, q),
+        ilike(events.description, q),
+        ilike(events.locationName, q),
+        ilike(clubs.name, q),
+        ilike(clubs.slug, q)
+      )!
+    );
+  }
+  const where = conditions.length ? and(...conditions) : undefined;
+  const [rows, countRows] = await Promise.all([
+    db
+      .select({
+        id: events.id,
+        clubId: events.clubId,
+        title: events.title,
+        description: events.description,
+        datetimeUtc: events.datetimeUtc,
+        isOpen: events.isOpen,
+        lat: events.lat,
+        lng: events.lng,
+        locationName: events.locationName,
+        registrationUrl: events.registrationUrl,
+        maxParticipants: events.maxParticipants,
+        createdAt: events.createdAt,
+        updatedAt: events.updatedAt,
+        clubName: clubs.name,
+        clubSlug: clubs.slug,
+      })
+      .from(events)
+      .innerJoin(clubs, eq(events.clubId, clubs.id))
+      .where(where)
+      .orderBy(desc(events.datetimeUtc))
+      .limit(limit)
+      .offset(offset),
+    db
+      .select({ count: sql<number>`count(*)` })
+      .from(events)
+      .innerJoin(clubs, eq(events.clubId, clubs.id))
+      .where(where),
+  ]);
+  return { events: rows, total: Number(countRows[0]?.count ?? 0) };
 }

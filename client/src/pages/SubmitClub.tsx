@@ -32,7 +32,6 @@ const schema = z.object({
   beginnerFriendly: z.boolean(),
   pricingType: z.enum(["free", "paid", "donation"]),
   monthlyFeeInr: z.number().int().nonnegative().optional(),
-  address: z.string().optional(),
   instagramUrl: z.string().url("Enter a valid URL").optional().or(z.literal("")),
   whatsappUrl: z.string().url("Enter a valid URL").optional().or(z.literal("")),
   websiteUrl: z.string().url("Enter a valid URL").optional().or(z.literal("")),
@@ -145,7 +144,9 @@ export default function SubmitClub() {
             <ArrowLeft className="w-3.5 h-3.5" /> Back to Explore
           </Link>
           <h1 className="font-display text-2xl font-bold text-foreground">Add Your Sports Club</h1>
-          <p className="text-muted-foreground mt-1">List your club for free and connect with sports enthusiasts across India.</p>
+          <p className="text-muted-foreground mt-1">
+            List your club for free on Treadgram and connect with sports enthusiasts across India.
+          </p>
         </div>
 
         {/* Step indicator */}
@@ -272,9 +273,8 @@ export default function SubmitClub() {
                     />
                   </div>
 
-                  <div className="space-y-1.5">
-                    <Label htmlFor="address">Meeting Location / Address</Label>
-                    <Input id="address" placeholder="e.g. Marina Beach, Chennai" {...register("address")} />
+                  <div className="p-4 rounded-lg bg-secondary/50 border border-border text-sm text-muted-foreground">
+                    Add meeting location while creating each event or session. This keeps your club profile flexible when venues change.
                   </div>
                 </CardContent>
               </>
@@ -288,19 +288,19 @@ export default function SubmitClub() {
                 </CardHeader>
                 <CardContent className="space-y-5">
                   <div className="space-y-1.5">
-                    <Label htmlFor="instagramUrl">Instagram URL</Label>
+                    <Label htmlFor="instagramUrl">Instagram URL (optional)</Label>
                     <Input id="instagramUrl" placeholder="https://instagram.com/yourclub" {...register("instagramUrl")} />
                     {errors.instagramUrl && <p className="text-xs text-destructive">{errors.instagramUrl.message}</p>}
                   </div>
 
                   <div className="space-y-1.5">
-                    <Label htmlFor="whatsappUrl">WhatsApp Group Link</Label>
+                    <Label htmlFor="whatsappUrl">WhatsApp Group Link (optional)</Label>
                     <Input id="whatsappUrl" placeholder="https://chat.whatsapp.com/..." {...register("whatsappUrl")} />
                     {errors.whatsappUrl && <p className="text-xs text-destructive">{errors.whatsappUrl.message}</p>}
                   </div>
 
                   <div className="space-y-1.5">
-                    <Label htmlFor="websiteUrl">Website URL</Label>
+                    <Label htmlFor="websiteUrl">Website URL (optional)</Label>
                     <Input id="websiteUrl" placeholder="https://yourclub.com" {...register("websiteUrl")} />
                     {errors.websiteUrl && <p className="text-xs text-destructive">{errors.websiteUrl.message}</p>}
                   </div>

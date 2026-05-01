@@ -1,0 +1,16 @@
+# Render Blueprint: https://render.com/docs/blueprint-spec
+# Create a PostgreSQL instance in the Render dashboard, then set DATABASE_URL on this service
+# (or use Render's "from database" link). Run migrations: DATABASE_URL=... pnpm db:push
+services:
+  - type: web
+    name: treadgram
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true

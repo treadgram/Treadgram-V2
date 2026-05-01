@@ -1,7 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { createEvent, deleteEvent, getClubById, listUpcomingEvents, updateEvent } from "../db";
-import { protectedProcedure, publicProcedure, router } from "../_core/trpc";
+import { createEvent, deleteEvent, getClubById, listEventsForAdmin, listUpcomingEvents, updateEvent } from "../db";
+import { adminProcedure, protectedProcedure, publicProcedure, router } from "../_core/trpc";
 
 const EventInputSchema = z.object({
   clubId: z.number().int(),
@@ -68,4 +68,26 @@ export const eventsRouter = router({
       await deleteEvent(input.id);
       return { success: true };
     }),
+
+  adminList: adminProcedure
+    .input(
+      z.object({
+        page: z.number().int().positive().default(1),
+        limit: z.number().int().min(1).max(100).default(20),
+        clubId: z.number().int().optional(),
+        search: z.string().optional(),
+        isOpen: z.boolean().optional(),
+        timeRange: z.enum(["all", "upcoming", "past"]).default("all"),
+      })
+    )
+    .query(async ({ input }) =>
+      listEventsForAdmin({
+        page: input.page,
+        limit: input.limit,
+        clubId: input.clubId,
+        search: input.search,
+        isOpen: input.isOpen,
+        timeRange: input.timeRange,
+      })
+    ),
 });

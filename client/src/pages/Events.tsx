@@ -17,7 +17,9 @@ export default function Events() {
             </div>
             <h1 className="font-display text-3xl font-bold text-foreground">Upcoming Events</h1>
           </div>
-          <p className="text-muted-foreground">Open sessions, races, and meetups from clubs across India</p>
+          <p className="text-muted-foreground">
+            Open sessions, races, and meetups from Treadgram clubs across India
+          </p>
         </div>
       </div>
 

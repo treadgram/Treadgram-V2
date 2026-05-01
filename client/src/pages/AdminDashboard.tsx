@@ -22,6 +22,14 @@ import { Skeleton } from "../components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
 import { toast } from "sonner";
 import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../components/ui/table";
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -44,6 +52,10 @@ export default function AdminDashboard() {
   );
   const { data: pendingClaims, isLoading: loadingClaims } = trpc.claims.pending.useQuery(
     undefined,
+    { enabled: isAdmin }
+  );
+  const { data: recentUsers, isLoading: loadingUsers } = trpc.auth.recentUsers.useQuery(
+    { limit: 25 },
     { enabled: isAdmin }
   );
 
@@ -180,6 +192,7 @@ export default function AdminDashboard() {
               )}
             </TabsTrigger>
             <TabsTrigger value="all">All Clubs</TabsTrigger>
+            <TabsTrigger value="signups">Recent Signups</TabsTrigger>
           </TabsList>
 
           {/* ── Pending Clubs ── */}
@@ -348,6 +361,46 @@ export default function AdminDashboard() {
                 </div>
               ))}
             </div>
+          </TabsContent>
+
+          <TabsContent value="signups">
+            <Card className="shadow-sm">
+              <CardHeader>
+                <CardTitle className="text-base">Recent User Signups</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {loadingUsers ? (
+                  <div className="space-y-2">
+                    {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="h-8 rounded-md" />)}
+                  </div>
+                ) : !recentUsers || recentUsers.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">No users found.</p>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Phone</TableHead>
+                        <TableHead>Login Method</TableHead>
+                        <TableHead>Created</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {recentUsers.map((u) => (
+                        <TableRow key={u.id}>
+                          <TableCell>{u.name ?? "—"}</TableCell>
+                          <TableCell>{u.email ?? "—"}</TableCell>
+                          <TableCell>{u.phone ?? "—"}</TableCell>
+                          <TableCell>{u.loginMethod ?? "—"}</TableCell>
+                          <TableCell>{new Date(u.createdAt).toLocaleString("en-IN")}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>

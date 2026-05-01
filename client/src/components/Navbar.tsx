@@ -49,7 +49,7 @@ export default function Navbar() {
             </div>
             <div className="hidden sm:block">
               <span className="font-display font-bold text-lg bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent leading-none">
-                TreadGram
+                Treadgram
               </span>
               <span className="block text-[10px] text-muted-foreground font-medium leading-none mt-0.5">
                 Your Sports Tribe
@@ -130,9 +130,14 @@ export default function Navbar() {
                 </DropdownMenu>
               </>
             ) : (
-              <Button size="sm" asChild>
-                <a href={getLoginUrl()}>Sign In</a>
-              </Button>
+              <>
+                <Button size="sm" variant="ghost" asChild>
+                  <Link href="/signup">Sign Up</Link>
+                </Button>
+                <Button size="sm" asChild>
+                  <a href={getLoginUrl()}>Sign In</a>
+                </Button>
+              </>
             )}
 
             {/* Mobile menu toggle */}

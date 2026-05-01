@@ -1,4 +1,4 @@
-# India Sports Club Discovery Portal — TODO
+# Treadgram — TODO
 
 ## Phase 1: Schema & Theme
 - [x] Design system: color tokens, typography, global CSS (saffron/teal palette)
@@ -68,9 +68,9 @@
 - [x] Final checkpoint
 
 
-## Rebranding to TreadGram (Black + Purple-Blue Gradient)
+## Rebranding to Treadgram (Black + Purple-Blue Gradient)
 - [x] Update CSS design tokens: black background, purple-blue gradient accents
-- [x] Update app name to TreadGram in Navbar, Footer, and metadata
+- [x] Update app name to Treadgram in Navbar, Footer, and metadata
 - [x] Update logo/branding colors (gradient from primary to accent)
 - [x] Verify all pages render correctly with new theme
 - [x] All 30 tests passing with new branding

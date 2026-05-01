@@ -9,7 +9,7 @@ import {
   getClubsByOwner,
   getClubsBySubmitter,
   incrementClubViewCount,
-  listAllClubsForAdmin,
+  listClubsForAdmin,
   listCities,
   listClubs,
   listSports,
@@ -169,8 +169,28 @@ export const clubsRouter = router({
   // ── Admin / Moderator ────────────────────────────────────────────────────────
 
   adminList: adminProcedure
-    .input(z.object({ page: z.number().int().positive().default(1), limit: z.number().int().min(1).max(50).default(20) }))
-    .query(async ({ input }) => listAllClubsForAdmin(input.page, input.limit)),
+    .input(
+      z.object({
+        page: z.number().int().positive().default(1),
+        limit: z.number().int().min(1).max(100).default(20),
+        status: z.enum(["pending", "approved", "rejected"]).optional(),
+        verified: z.boolean().optional(),
+        search: z.string().optional(),
+        city: z.string().optional(),
+        sport: z.string().optional(),
+      })
+    )
+    .query(async ({ input }) =>
+      listClubsForAdmin({
+        page: input.page,
+        limit: input.limit,
+        status: input.status,
+        verified: input.verified,
+        search: input.search,
+        city: input.city,
+        sport: input.sport,
+      })
+    ),
 
   adminStats: adminProcedure.query(async () => getAdminClubStats()),
 

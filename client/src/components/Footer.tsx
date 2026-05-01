@@ -17,11 +17,12 @@ export default function Footer() {
                 <Trophy className="w-4.5 h-4.5 text-primary-foreground" />
               </div>
               <span className="font-display font-bold text-lg bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                TreadGram
+                Treadgram
               </span>
             </Link>
             <p className="text-sm text-sidebar-foreground/60 leading-relaxed">
-              Your Sports Tribe — discover and join running clubs, cycling groups, yoga studios, and more sports communities across India.
+              Treadgram is your sports tribe — discover and join running clubs, cycling groups, yoga studios, and more
+              communities across India.
             </p>
           </div>
 
@@ -89,10 +90,10 @@ export default function Footer() {
 
         <div className="border-t border-sidebar-border mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-sidebar-foreground/40">
-            © {new Date().getFullYear()} ClubsIndia. Discover sports communities across India.
+            © {new Date().getFullYear()} Treadgram. Discover sports communities across India.
           </p>
           <p className="text-xs text-sidebar-foreground/40">
-            Built with ❤️ for the Indian sports community
+            Built with ❤️ for everyone who moves on Treadgram
           </p>
         </div>
       </div>

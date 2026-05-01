@@ -1,6 +1,6 @@
-# India Sports Club Discovery Portal
+# Treadgram
 
-A production-ready web portal for discovering running clubs and other sports clubs across India. Users can browse by city and sport, view club profiles with maps and schedules, submit new clubs, claim ownership, and attend events.
+A production-ready web app for discovering running clubs and other sports clubs across India. **Treadgram** helps users browse by city and sport, view club profiles with maps and schedules, submit new clubs, claim ownership, and attend events.
 
 ---
 
@@ -193,9 +193,11 @@ Additional business-logic guards:
 
 ### 1. Clone and install
 
+Use a checkout folder named `treadgram` (or rename after clone).
+
 ```bash
-git clone <repo-url>
-cd india-sports-clubs
+git clone <repo-url> treadgram
+cd treadgram
 pnpm install
 ```
 
@@ -274,7 +276,7 @@ Alternatively, the `OWNER_OPEN_ID` environment variable automatically promotes t
 ## Project Structure
 
 ```
-india-sports-clubs/
+treadgram/
 ├── client/
 │   └── src/
 │       ├── components/
@@ -345,5 +347,11 @@ This project is hosted on Manus with built-in MySQL database. To deploy:
 1. Create a checkpoint via the Management UI
 2. Click **Publish** in the Management UI header
 3. Configure a custom domain in Settings → Domains (optional)
+
+### Docker (any cloud)
+
+The repo includes a **`Dockerfile`** that runs `pnpm build` and starts `node dist/index.js` (Express serves the Vite build and `/api/trpc`). Set **`DATABASE_URL`** (PostgreSQL) and **`JWT_SECRET`** at runtime. Apply schema with `DATABASE_URL=... pnpm db:push` before or after first deploy.
+
+Optional **`render.yaml`** can be used as a [Render Blueprint](https://render.com/docs/blueprint-spec): connect a Render PostgreSQL database and set `DATABASE_URL` on the web service.
 
 For external deployment (Vercel + PlanetScale), replace `DATABASE_URL` with your PlanetScale connection string and deploy the `server/` directory as a Node.js service.

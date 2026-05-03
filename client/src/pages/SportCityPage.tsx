@@ -31,33 +31,35 @@ export default function SportCityPage({ params }: SportCityPageProps) {
     limit: 12,
   });
 
-  const pageTitle = `${sportLabel} Clubs in ${cityLabel}`;
-
   return (
     <div className="min-h-screen bg-background">
       {/* SEO-friendly header */}
-      <div className="bg-gradient-to-br from-primary/5 to-accent/5 border-b border-border py-12">
+      <div className="border-b border-[#1a1a1a] bg-[#111111] py-16 md:py-24">
         <div className="container">
-          {/* Breadcrumb */}
-          <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-            <Link href="/" className="hover:text-foreground transition-colors">India</Link>
+          <nav className="mb-4 flex flex-wrap items-center gap-2 font-display text-[11px] font-bold uppercase tracking-[0.12em] text-[#888888]">
+            <Link href="/" className="transition-colors hover:text-primary">
+              India
+            </Link>
             <span>/</span>
-            <Link href={`/india/${cityKey}`} className="hover:text-foreground transition-colors">{cityLabel}</Link>
+            <Link href={`/india/${cityKey}`} className="transition-colors hover:text-primary">
+              {cityLabel}
+            </Link>
             <span>/</span>
-            <span className="text-foreground">{sportLabel} Clubs</span>
+            <span className="text-foreground">{sportLabel} clubs</span>
           </nav>
 
-          <div className="flex items-start gap-4">
-            <div className="text-4xl">{sportInfo?.emoji ?? "🏅"}</div>
+          <div className="flex items-start gap-5">
+            <div className="text-4xl leading-none">{sportInfo?.emoji ?? "🏅"}</div>
             <div>
-              <h1 className="font-display text-3xl sm:text-4xl font-bold text-foreground mb-2">
-                {pageTitle}
+              <p className="section-label mb-2">// Sport + city</p>
+              <h1 className="font-display text-3xl font-black uppercase tracking-[-0.02em] text-foreground sm:text-5xl">
+                <span className="text-primary">{sportLabel}</span> clubs in {cityLabel}
               </h1>
-              <p className="text-muted-foreground flex items-center gap-1.5">
-                <MapPin className="w-4 h-4" />
+              <p className="mt-4 flex flex-wrap items-center gap-2 text-[15px] text-[#aaaaaa]">
+                <MapPin className="size-4 shrink-0 text-primary" />
                 {cityLabel}, India
                 {data && (
-                  <span className="ml-2 text-foreground font-medium">
+                  <span className="font-display text-[11px] font-bold uppercase tracking-[0.12em] text-foreground">
                     · {data.total} club{data.total !== 1 ? "s" : ""}
                   </span>
                 )}
@@ -68,18 +70,20 @@ export default function SportCityPage({ params }: SportCityPageProps) {
       </div>
 
       {/* Content */}
-      <div className="container py-10">
-        {/* Other sports in this city */}
-        <div className="flex flex-wrap gap-2 mb-8">
-          {SPORTS.filter((s) => s.key !== sportKey).slice(0, 6).map((sport) => (
-            <Link
-              key={sport.key}
-              href={`/india/${cityKey}/${sport.key}-clubs`}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all hover:scale-105 ${sport.color}`}
-            >
-              {sport.emoji} {sport.label}
-            </Link>
-          ))}
+      <div className="container py-16 md:py-20">
+        <p className="section-label mb-3">// Other sports</p>
+        <div className="mb-10 flex flex-wrap gap-2">
+          {SPORTS.filter((s) => s.key !== sportKey)
+            .slice(0, 6)
+            .map((sport) => (
+              <Link
+                key={sport.key}
+                href={`/india/${cityKey}/${sport.key}-clubs`}
+                className={`inline-flex items-center gap-1.5 border px-3 py-2 font-display text-[11px] font-bold uppercase tracking-[0.12em] transition-[filter,border-color] hover:border-primary ${sport.color}`}
+              >
+                {sport.emoji} {sport.label}
+              </Link>
+            ))}
         </div>
 
         {isLoading ? (

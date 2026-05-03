@@ -1,5 +1,5 @@
 import { trpc } from "@/lib/trpc";
-import { CITIES, SPORTS, getSportEmoji, getSportColor } from "../../../shared/constants";
+import { CITIES, SPORTS } from "../../../shared/constants";
 import { ArrowRight, MapPin } from "lucide-react";
 import { Link } from "wouter";
 import ClubCard from "../components/clubs/ClubCard";
@@ -25,43 +25,47 @@ export default function CityPage({ params }: CityPageProps) {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="bg-gradient-to-br from-primary/5 to-accent/5 border-b border-border py-12">
+      <div className="border-b border-[#1a1a1a] bg-[#111111] py-16 md:py-24">
         <div className="container">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-            <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
+          <div className="mb-4 flex items-center gap-2 font-display text-[11px] font-bold uppercase tracking-[0.12em] text-[#888888]">
+            <Link href="/" className="transition-colors hover:text-primary">
+              Home
+            </Link>
             <span>/</span>
-            <Link href="/explore" className="hover:text-foreground transition-colors">Explore</Link>
+            <Link href="/explore" className="transition-colors hover:text-primary">
+              Explore
+            </Link>
             <span>/</span>
             <span className="text-foreground">{cityLabel}</span>
           </div>
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-              <MapPin className="w-5 h-5 text-primary" />
+          <p className="section-label mb-3">// City</p>
+          <div className="flex items-center gap-3">
+            <div className="flex size-11 shrink-0 items-center justify-center border border-primary/40 bg-[#0a0a0a]">
+              <MapPin className="size-5 text-primary" />
             </div>
-            <h1 className="font-display text-3xl sm:text-4xl font-bold text-foreground">
-              Sports Clubs in {cityLabel}
+            <h1 className="font-display text-3xl font-black uppercase tracking-[-0.02em] text-foreground sm:text-5xl">
+              Sports clubs in <span className="text-primary">{cityLabel}</span>
             </h1>
           </div>
-          {cityInfo && (
-            <p className="text-muted-foreground">{cityInfo.state}, India</p>
-          )}
+          {cityInfo && <p className="mt-4 text-[15px] text-[#aaaaaa]">{cityInfo.state}, India</p>}
         </div>
       </div>
 
       {/* Sports grid for this city */}
-      <section className="py-10 border-b border-border">
+      <section className="border-b border-[#1a1a1a] py-16 md:py-20">
         <div className="container">
-          <h2 className="font-display text-xl font-semibold text-foreground mb-5">
-            Browse by Sport in {cityLabel}
+          <p className="section-label mb-3">// Sports</p>
+          <h2 className="font-display text-2xl font-black uppercase tracking-[-0.02em] text-foreground md:text-3xl">
+            Browse by sport in {cityLabel}
           </h2>
-          <div className="flex flex-wrap gap-2.5">
+          <div className="mt-8 flex flex-wrap gap-2">
             {SPORTS.map((sport) => (
               <Link
                 key={sport.key}
                 href={`/india/${cityKey}/${sport.key}-clubs`}
-                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all hover:scale-105 ${sport.color}`}
+                className={`inline-flex items-center gap-2 border px-4 py-2.5 font-display text-[11px] font-bold uppercase tracking-[0.12em] transition-[filter,border-color] hover:border-primary ${sport.color}`}
               >
-                {sport.emoji} {sport.label} Clubs
+                {sport.emoji} {sport.label} clubs
               </Link>
             ))}
           </div>
@@ -69,16 +73,21 @@ export default function CityPage({ params }: CityPageProps) {
       </section>
 
       {/* All clubs in city */}
-      <section className="py-12">
+      <section className="py-16 md:py-24">
         <div className="container">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="font-display text-xl font-semibold text-foreground">
-              All Clubs in {cityLabel}
-              {data && <span className="text-muted-foreground font-normal text-base ml-2">({data.total})</span>}
-            </h2>
-            <Button variant="outline" asChild>
+          <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="section-label mb-3">// Directory</p>
+              <h2 className="font-display text-2xl font-black uppercase tracking-[-0.02em] text-foreground md:text-3xl">
+                All clubs in {cityLabel}
+                {data && (
+                  <span className="ml-2 font-display text-lg font-bold text-[#888888]">({data.total})</span>
+                )}
+              </h2>
+            </div>
+            <Button variant="outline" asChild className="w-fit border-white">
               <Link href={`/explore?city=${cityKey}`} className="gap-1.5">
-                View all <ArrowRight className="w-4 h-4" />
+                View all <ArrowRight className="size-4" />
               </Link>
             </Button>
           </div>

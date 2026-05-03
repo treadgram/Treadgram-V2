@@ -59,7 +59,7 @@ export default function FilterPanel({ filters, onChange, className }: FilterPane
   };
 
   return (
-    <div className={cn("bg-card rounded-xl border border-border p-5 space-y-5", className)}>
+    <div className={cn("space-y-5 border border-[#222222] bg-card p-5", className)}>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 font-semibold text-sm text-foreground">

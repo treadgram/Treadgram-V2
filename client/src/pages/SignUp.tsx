@@ -71,42 +71,43 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-8rem)] bg-gradient-to-br from-primary/5 via-background to-accent/5">
-      <div className="container py-10 lg:py-16">
-        <div className="grid gap-10 lg:grid-cols-2 lg:gap-16 items-center max-w-5xl mx-auto">
-          <div className="space-y-6 order-2 lg:order-1">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium">
-              <Trophy className="w-4 h-4" />
-              Join Treadgram
+    <div className="min-h-[calc(100vh-8rem)] bg-background">
+      <div className="container py-16 lg:py-24">
+        <div className="mx-auto grid max-w-5xl items-center gap-12 lg:grid-cols-2 lg:gap-20">
+          <div className="order-2 space-y-8 lg:order-1">
+            <div>
+              <p className="section-label mb-3">// Onboarding</p>
+              <div className="mb-4 inline-flex items-center gap-2 border border-primary/40 bg-primary/10 px-3 py-2 font-display text-[11px] font-bold uppercase tracking-[0.14em] text-primary">
+                <Trophy className="size-4" />
+                Join Treadgram
+              </div>
+              <h1 className="font-display text-3xl font-black uppercase tracking-[-0.02em] text-foreground sm:text-5xl">
+                Create your <span className="text-primary">account</span>
+              </h1>
+              <p className="mt-4 max-w-md text-[15px] leading-relaxed text-[#aaaaaa]">
+                Sign up with email and password. Explore clubs immediately, submit new listings, and claim crews you run.
+              </p>
             </div>
-            <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-tight">
-              Create your account
-            </h1>
-            <p className="text-muted-foreground text-base leading-relaxed max-w-md">
-              Sign up with email and password. You can explore clubs right away, submit new ones,
-              and claim listings you run.
-            </p>
-            <ul className="space-y-4 pt-2">
+            <ul className="space-y-5 pt-2">
               {perks.map(({ icon: Icon, title, body }) => (
-                <li key={title} className="flex gap-3">
-                  <div className="shrink-0 w-10 h-10 rounded-lg bg-card border flex items-center justify-center shadow-sm">
-                    <Icon className="w-5 h-5 text-primary" />
+                <li key={title} className="flex gap-4">
+                  <div className="flex size-11 shrink-0 items-center justify-center border border-[#222222] bg-[#141414]">
+                    <Icon className="size-5 text-primary" />
                   </div>
                   <div>
-                    <p className="font-medium text-foreground">{title}</p>
-                    <p className="text-sm text-muted-foreground leading-snug">{body}</p>
+                    <p className="font-display text-sm font-bold uppercase tracking-wide text-foreground">{title}</p>
+                    <p className="mt-1 text-[14px] leading-snug text-[#aaaaaa]">{body}</p>
                   </div>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="order-1 lg:order-2">
-            <div className="rounded-2xl border bg-card p-6 sm:p-8 shadow-sm max-w-md mx-auto lg:ml-auto lg:mr-0 w-full">
-              <h2 className="text-xl font-semibold mb-1">Sign up</h2>
-              <p className="text-sm text-muted-foreground mb-6">
-                All fields marked with * are required.
-              </p>
+          <div className="order-1 w-full max-w-md mx-auto lg:order-2 lg:ml-auto lg:mr-0">
+            <div className="border border-[#222222] bg-[#141414] p-6 sm:p-8">
+              <p className="section-label mb-2">// Form</p>
+              <h2 className="font-display text-2xl font-black uppercase tracking-wide text-foreground">Sign up</h2>
+              <p className="mb-8 mt-2 text-[14px] text-[#888888]">All fields marked with * are required.</p>
 
               <form onSubmit={submit} className="space-y-4">
                 <div className="space-y-2">
@@ -187,9 +188,9 @@ export default function SignUpPage() {
                 </Button>
               </form>
 
-              <p className="text-sm text-muted-foreground mt-6 text-center">
+              <p className="mt-6 text-center text-[15px] text-[#888888]">
                 Already have an account?{" "}
-                <Link href="/login" className="text-primary font-medium underline underline-offset-2">
+                <Link href="/login" className="font-display text-[11px] font-bold uppercase tracking-[0.12em] text-primary hover:opacity-90">
                   Sign in
                 </Link>
               </p>

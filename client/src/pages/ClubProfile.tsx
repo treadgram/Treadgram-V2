@@ -95,15 +95,15 @@ export default function ClubProfile({ params }: ClubProfileProps) {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
-      <div className="relative h-56 sm:h-72 bg-gradient-to-br from-secondary to-muted overflow-hidden">
+      <div className="relative h-56 overflow-hidden bg-[#111111] sm:h-72">
         {club.coverImageUrl ? (
-          <img src={club.coverImageUrl} alt={club.name} className="w-full h-full object-cover" />
+          <img src={club.coverImageUrl} alt={club.name} className="h-full w-full object-cover" />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center">
             <span className="text-8xl opacity-10">{sportInfo?.emoji ?? "🏅"}</span>
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+        <div className="absolute inset-0 bg-black/55" />
       </div>
 
       <div className="container -mt-12 relative pb-16">
@@ -111,11 +111,11 @@ export default function ClubProfile({ params }: ClubProfileProps) {
           {/* Main column */}
           <div className="lg:col-span-2 space-y-6">
             {/* Club header card */}
-            <Card className="shadow-sm">
+            <Card className="border-[#222222] bg-[#141414]">
               <CardContent className="pt-6">
                 <div className="flex items-start gap-4">
                   {/* Logo */}
-                  <div className="w-16 h-16 rounded-xl bg-muted border border-border flex items-center justify-center shrink-0 overflow-hidden shadow-sm">
+                  <div className="flex size-16 shrink-0 items-center justify-center overflow-hidden border border-[#222222] bg-[#0a0a0a]">
                     {club.logoUrl ? (
                       <img src={club.logoUrl} alt="" className="w-full h-full object-cover" />
                     ) : (
@@ -126,24 +126,31 @@ export default function ClubProfile({ params }: ClubProfileProps) {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2 flex-wrap">
                       <div>
-                        <div className="flex items-center gap-2 flex-wrap mb-1">
-                          <h1 className="font-display text-2xl font-bold text-foreground">{club.name}</h1>
+                        <div className="mb-1 flex flex-wrap items-center gap-2">
+                          <h1 className="font-display text-2xl font-black uppercase tracking-wide text-foreground md:text-3xl">
+                            {club.name}
+                          </h1>
                           {club.verified && (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-accent text-accent-foreground">
-                              <BadgeCheck className="w-3.5 h-3.5" /> Verified
+                            <span className="inline-flex items-center gap-1 border border-primary bg-primary px-2 py-1 font-display text-[10px] font-bold uppercase tracking-[0.12em] text-primary-foreground">
+                              <BadgeCheck className="size-3.5" /> Verified
                             </span>
                           )}
                         </div>
-                        <div className="flex items-center gap-3 flex-wrap text-sm text-muted-foreground">
+                        <div className="flex flex-wrap items-center gap-3 text-[14px] text-[#aaaaaa]">
                           <span className="flex items-center gap-1">
-                            <MapPin className="w-3.5 h-3.5" /> {club.cityLabel}
+                            <MapPin className="size-3.5 text-primary" /> {club.cityLabel}
                           </span>
-                          <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold", sportInfo?.color ?? "bg-gray-100 text-gray-700")}>
+                          <span
+                            className={cn(
+                              "inline-flex items-center gap-1 border px-2 py-1 font-display text-[10px] font-bold uppercase tracking-[0.12em]",
+                              sportInfo?.color ?? "border-[#333] bg-[#181818] text-[#aaaaaa]"
+                            )}
+                          >
                             {sportInfo?.emoji} {club.sportLabel}
                           </span>
                           {club.reviewCount > 0 && (
                             <span className="flex items-center gap-1">
-                              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                              <Star className="size-3.5 fill-primary text-primary" />
                               {Number(club.avgRating).toFixed(1)} ({club.reviewCount} reviews)
                             </span>
                           )}
@@ -175,17 +182,26 @@ export default function ClubProfile({ params }: ClubProfileProps) {
                     </div>
 
                     {/* Tags */}
-                    <div className="flex flex-wrap gap-2 mt-3">
-                      <span className={cn("text-xs font-medium px-2.5 py-1 rounded-full",
-                        club.pricingType === "free" ? "bg-green-100 text-green-700" :
-                        club.pricingType === "paid" ? "bg-blue-100 text-blue-700" :
-                        "bg-purple-100 text-purple-700"
-                      )}>
-                        {club.pricingType === "free" ? "Free" : club.pricingType === "paid" ? `₹${club.monthlyFeeInr ?? "Paid"}/mo` : "Donation-based"}
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <span
+                        className={cn(
+                          "border px-2.5 py-1 font-display text-[10px] font-bold uppercase tracking-[0.12em]",
+                          club.pricingType === "free"
+                            ? "border-emerald-800 bg-emerald-950/50 text-emerald-400"
+                            : club.pricingType === "paid"
+                              ? "border-sky-800 bg-sky-950/50 text-sky-300"
+                              : "border-violet-800 bg-violet-950/50 text-violet-300"
+                        )}
+                      >
+                        {club.pricingType === "free"
+                          ? "Free"
+                          : club.pricingType === "paid"
+                            ? `₹${club.monthlyFeeInr ?? "Paid"}/mo`
+                            : "Donation-based"}
                       </span>
                       {club.beginnerFriendly && (
-                        <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-teal-100 text-teal-700">
-                          Beginner Friendly
+                        <span className="border border-[#333] bg-[#181818] px-2.5 py-1 font-display text-[10px] font-bold uppercase tracking-[0.12em] text-[#aaaaaa]">
+                          Beginner friendly
                         </span>
                       )}
                     </div>
@@ -194,8 +210,8 @@ export default function ClubProfile({ params }: ClubProfileProps) {
 
                 {/* Description */}
                 {club.description && (
-                  <div className="mt-5 pt-5 border-t border-border">
-                    <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">{club.description}</p>
+                  <div className="mt-5 border-t border-border pt-5">
+                    <p className="whitespace-pre-wrap text-[15px] leading-relaxed text-[#aaaaaa]">{club.description}</p>
                   </div>
                 )}
               </CardContent>
@@ -212,7 +228,7 @@ export default function ClubProfile({ params }: ClubProfileProps) {
                 <CardContent>
                   <div className="space-y-3">
                     {sessions.map((session) => (
-                      <div key={session.id} className="flex items-start gap-3 p-3 rounded-lg bg-secondary/50">
+                      <div key={session.id} className="flex items-start gap-3 p-3 rounded-none bg-secondary/50">
                         <div className="w-20 shrink-0">
                           <span className="text-xs font-semibold text-primary">
                             {DAYS_OF_WEEK[session.dayOfWeek]}
@@ -249,8 +265,9 @@ export default function ClubProfile({ params }: ClubProfileProps) {
                 <CardContent>
                   <div className="space-y-3">
                     {events.map((event) => (
-                      <div key={event.id} className="flex items-start gap-3 p-3 rounded-lg border border-border">
-                        <div className="w-12 h-12 rounded-lg bg-primary/10 flex flex-col items-center justify-center shrink-0">
+                      <Link key={event.id} href={`/events/${event.id}`} className="block">
+                        <div className="flex items-start gap-3 p-3 rounded-none border border-border transition-colors hover:border-primary">
+                        <div className="w-12 h-12 rounded-none bg-primary/10 flex flex-col items-center justify-center shrink-0">
                           <span className="text-xs font-bold text-primary">
                             {new Date(event.datetimeUtc).toLocaleDateString("en-IN", { day: "2-digit" })}
                           </span>
@@ -267,25 +284,19 @@ export default function ClubProfile({ params }: ClubProfileProps) {
                           {event.description && (
                             <div className="text-xs text-muted-foreground mt-1 line-clamp-2">{event.description}</div>
                           )}
-                          <div className="flex items-center gap-2 mt-2">
+                          <div className="mt-2 flex items-center gap-2">
                             {event.isOpen && (
-                              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-green-100 text-green-700">
+                              <span className="rounded-none border border-emerald-800 bg-emerald-950/40 px-2 py-0.5 font-display text-[10px] font-bold uppercase tracking-[0.1em] text-emerald-400">
                                 Open to All
                               </span>
                             )}
                             {event.registrationUrl && (
-                              <a
-                                href={event.registrationUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-xs text-primary hover:underline flex items-center gap-1"
-                              >
-                                Register <ExternalLink className="w-3 h-3" />
-                              </a>
+                              <span className="text-xs text-primary">Registration link on event page →</span>
                             )}
                           </div>
                         </div>
                       </div>
+                      </Link>
                     ))}
                   </div>
                 </CardContent>
@@ -308,7 +319,7 @@ export default function ClubProfile({ params }: ClubProfileProps) {
               <CardContent className="space-y-4">
                 {/* Write review */}
                 {isAuthenticated && !myReview ? (
-                  <div className="p-4 rounded-lg bg-secondary/50 border border-border space-y-3">
+                  <div className="p-4 rounded-none bg-secondary/50 border border-border space-y-3">
                     <p className="text-sm font-medium text-foreground">Write a Review</p>
                     <div className="flex gap-1">
                       {[1, 2, 3, 4, 5].map((star) => (
@@ -348,7 +359,7 @@ export default function ClubProfile({ params }: ClubProfileProps) {
                     </Button>
                   </div>
                 ) : !isAuthenticated ? (
-                  <div className="p-4 rounded-lg bg-secondary/50 text-center">
+                  <div className="p-4 rounded-none bg-secondary/50 text-center">
                     <p className="text-sm text-muted-foreground mb-2">Sign in to leave a review</p>
                     <Button size="sm" asChild>
                       <a href={getLoginUrl()}>Sign In</a>
@@ -408,9 +419,9 @@ export default function ClubProfile({ params }: ClubProfileProps) {
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => handleOutboundClick("instagram")}
-                    className="flex items-center gap-3 p-3 rounded-lg border border-border hover:border-primary/40 hover:bg-secondary/50 transition-all group"
+                    className="flex items-center gap-3 p-3 rounded-none border border-border hover:border-primary/40 hover:bg-secondary/50 transition-all group"
                   >
-                    <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                    <div className="flex size-9 items-center justify-center rounded-none border border-primary bg-[#0a0a0a]">
                       <Instagram className="w-4.5 h-4.5 text-white" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -426,9 +437,9 @@ export default function ClubProfile({ params }: ClubProfileProps) {
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => handleOutboundClick("whatsapp")}
-                    className="flex items-center gap-3 p-3 rounded-lg border border-border hover:border-primary/40 hover:bg-secondary/50 transition-all group"
+                    className="flex items-center gap-3 p-3 rounded-none border border-border hover:border-primary/40 hover:bg-secondary/50 transition-all group"
                   >
-                    <div className="w-9 h-9 rounded-lg bg-green-500 flex items-center justify-center">
+                    <div className="flex size-9 items-center justify-center rounded-none border border-emerald-600 bg-[#0a0a0a]">
                       <MessageCircle className="w-4.5 h-4.5 text-white" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -444,9 +455,9 @@ export default function ClubProfile({ params }: ClubProfileProps) {
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => handleOutboundClick("website")}
-                    className="flex items-center gap-3 p-3 rounded-lg border border-border hover:border-primary/40 hover:bg-secondary/50 transition-all group"
+                    className="flex items-center gap-3 p-3 rounded-none border border-border hover:border-primary/40 hover:bg-secondary/50 transition-all group"
                   >
-                    <div className="w-9 h-9 rounded-lg bg-blue-500 flex items-center justify-center">
+                    <div className="flex size-9 items-center justify-center rounded-none border border-sky-600 bg-[#0a0a0a]">
                       <Globe className="w-4.5 h-4.5 text-white" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -527,15 +538,15 @@ function ClubProfileSkeleton() {
       <div className="container -mt-12 relative pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
-            <div className="bg-card rounded-xl border border-border p-6 space-y-4">
+            <div className="bg-card rounded-none border border-border p-6 space-y-4">
               <div className="flex gap-4">
-                <Skeleton className="w-16 h-16 rounded-xl" />
+                <Skeleton className="w-16 h-16 rounded-none" />
                 <div className="flex-1 space-y-2">
                   <Skeleton className="h-7 w-2/3" />
                   <Skeleton className="h-4 w-1/3" />
                   <div className="flex gap-2">
-                    <Skeleton className="h-5 w-16 rounded-full" />
-                    <Skeleton className="h-5 w-24 rounded-full" />
+                    <Skeleton className="h-5 w-16 rounded-none" />
+                    <Skeleton className="h-5 w-24 rounded-none" />
                   </div>
                 </div>
               </div>
@@ -543,8 +554,8 @@ function ClubProfileSkeleton() {
             </div>
           </div>
           <div className="space-y-5">
-            <Skeleton className="h-48 rounded-xl" />
-            <Skeleton className="h-52 rounded-xl" />
+            <Skeleton className="h-48 rounded-none" />
+            <Skeleton className="h-52 rounded-none" />
           </div>
         </div>
       </div>

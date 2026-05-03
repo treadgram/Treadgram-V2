@@ -365,6 +365,70 @@ export async function listUpcomingEvents(clubId?: number, limit = 10) {
     .limit(limit);
 }
 
+/** Upcoming events with host club fields for marketing grids */
+export async function listUpcomingEventsForFeed(limit = 12) {
+  const db = await getDb();
+  if (!db) return [];
+  const now = new Date();
+  return db
+    .select({
+      id: events.id,
+      clubId: events.clubId,
+      title: events.title,
+      description: events.description,
+      datetimeUtc: events.datetimeUtc,
+      isOpen: events.isOpen,
+      lat: events.lat,
+      lng: events.lng,
+      locationName: events.locationName,
+      registrationUrl: events.registrationUrl,
+      maxParticipants: events.maxParticipants,
+      createdAt: events.createdAt,
+      updatedAt: events.updatedAt,
+      clubCityLabel: clubs.cityLabel,
+      clubCoverImageUrl: clubs.coverImageUrl,
+      clubSlug: clubs.slug,
+    })
+    .from(events)
+    .innerJoin(clubs, eq(events.clubId, clubs.id))
+    .where(gt(events.datetimeUtc, now))
+    .orderBy(asc(events.datetimeUtc))
+    .limit(limit);
+}
+
+export async function getEventWithClubById(id: number) {
+  const db = await getDb();
+  if (!db) return null;
+  const rows = await db
+    .select({
+      id: events.id,
+      clubId: events.clubId,
+      title: events.title,
+      description: events.description,
+      datetimeUtc: events.datetimeUtc,
+      isOpen: events.isOpen,
+      lat: events.lat,
+      lng: events.lng,
+      locationName: events.locationName,
+      registrationUrl: events.registrationUrl,
+      maxParticipants: events.maxParticipants,
+      createdAt: events.createdAt,
+      updatedAt: events.updatedAt,
+      clubName: clubs.name,
+      clubSlug: clubs.slug,
+      clubCityLabel: clubs.cityLabel,
+      clubCoverImageUrl: clubs.coverImageUrl,
+      clubLogoUrl: clubs.logoUrl,
+      pricingType: clubs.pricingType,
+      monthlyFeeInr: clubs.monthlyFeeInr,
+    })
+    .from(events)
+    .innerJoin(clubs, eq(events.clubId, clubs.id))
+    .where(eq(events.id, id))
+    .limit(1);
+  return rows[0] ?? null;
+}
+
 export async function createEvent(data: InsertEvent) {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");

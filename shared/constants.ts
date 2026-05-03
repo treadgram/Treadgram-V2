@@ -20,16 +20,16 @@ export type CityKey = (typeof CITIES)[number]["key"];
 // ─── Sports ───────────────────────────────────────────────────────────────────
 
 export const SPORTS = [
-  { key: "running", label: "Running", emoji: "🏃", color: "bg-orange-100 text-orange-700" },
-  { key: "cycling", label: "Cycling", emoji: "🚴", color: "bg-blue-100 text-blue-700" },
-  { key: "yoga", label: "Yoga", emoji: "🧘", color: "bg-purple-100 text-purple-700" },
-  { key: "badminton", label: "Badminton", emoji: "🏸", color: "bg-red-100 text-red-700" },
-  { key: "pickleball", label: "Pickleball", emoji: "🎾", color: "bg-lime-100 text-lime-700" },
-  { key: "tennis", label: "Tennis", emoji: "🎾", color: "bg-yellow-100 text-yellow-700" },
-  { key: "basketball", label: "Basketball", emoji: "🏀", color: "bg-amber-100 text-amber-700" },
-  { key: "hiking", label: "Hiking", emoji: "🥾", color: "bg-stone-100 text-stone-700" },
-  { key: "martial-arts", label: "Martial Arts", emoji: "🥋", color: "bg-rose-100 text-rose-700" },
-  { key: "fitness", label: "Fitness", emoji: "💪", color: "bg-indigo-100 text-indigo-700" },
+  { key: "running", label: "Running", emoji: "🏃", color: "bg-[#181818] text-orange-400 border border-orange-900/60" },
+  { key: "cycling", label: "Cycling", emoji: "🚴", color: "bg-[#181818] text-sky-400 border border-sky-900/60" },
+  { key: "yoga", label: "Yoga", emoji: "🧘", color: "bg-[#181818] text-violet-400 border border-violet-900/60" },
+  { key: "badminton", label: "Badminton", emoji: "🏸", color: "bg-[#181818] text-red-400 border border-red-900/60" },
+  { key: "pickleball", label: "Pickleball", emoji: "🎾", color: "bg-[#181818] text-lime-400 border border-lime-900/60" },
+  { key: "tennis", label: "Tennis", emoji: "🎾", color: "bg-[#181818] text-yellow-400 border border-yellow-900/60" },
+  { key: "basketball", label: "Basketball", emoji: "🏀", color: "bg-[#181818] text-amber-400 border border-amber-900/60" },
+  { key: "hiking", label: "Hiking", emoji: "🥾", color: "bg-[#181818] text-stone-400 border border-stone-700" },
+  { key: "martial-arts", label: "Martial Arts", emoji: "🥋", color: "bg-[#181818] text-rose-400 border border-rose-900/60" },
+  { key: "fitness", label: "Fitness", emoji: "💪", color: "bg-[#181818] text-indigo-400 border border-indigo-900/60" },
 ] as const;
 
 export type SportKey = (typeof SPORTS)[number]["key"];
@@ -77,7 +77,7 @@ export function getSportEmoji(key: string) {
 }
 
 export function getSportColor(key: string) {
-  return SPORTS.find((s) => s.key === key)?.color ?? "bg-gray-100 text-gray-700";
+  return SPORTS.find((s) => s.key === key)?.color ?? "bg-[#181818] text-[#aaaaaa] border border-[#333]";
 }
 
 export function getCityLabel(key: string) {

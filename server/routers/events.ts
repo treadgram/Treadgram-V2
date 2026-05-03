@@ -1,6 +1,15 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { createEvent, deleteEvent, getClubById, listEventsForAdmin, listUpcomingEvents, updateEvent } from "../db";
+import {
+  createEvent,
+  deleteEvent,
+  getClubById,
+  getEventWithClubById,
+  listEventsForAdmin,
+  listUpcomingEvents,
+  listUpcomingEventsForFeed,
+  updateEvent,
+} from "../db";
 import { adminProcedure, protectedProcedure, publicProcedure, router } from "../_core/trpc";
 
 const EventInputSchema = z.object({
@@ -29,6 +38,18 @@ export const eventsRouter = router({
   upcoming: publicProcedure
     .input(z.object({ clubId: z.number().int().optional(), limit: z.number().int().min(1).max(50).default(10) }))
     .query(async ({ input }) => listUpcomingEvents(input.clubId, input.limit)),
+
+  feed: publicProcedure
+    .input(z.object({ limit: z.number().int().min(1).max(24).default(12) }))
+    .query(async ({ input }) => listUpcomingEventsForFeed(input.limit)),
+
+  byId: publicProcedure
+    .input(z.object({ id: z.number().int() }))
+    .query(async ({ input }) => {
+      const row = await getEventWithClubById(input.id);
+      if (!row) throw new TRPCError({ code: "NOT_FOUND", message: "Event not found" });
+      return row;
+    }),
 
   create: protectedProcedure.input(EventInputSchema).mutation(async ({ input, ctx }) => {
     await assertClubOwner(input.clubId, ctx.user.id, ctx.user.role);

@@ -1,15 +1,12 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
-import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
 import {
   ChevronDown,
   LogOut,
   Menu,
   Plus,
-  Settings,
   Shield,
-  Trophy,
   User,
   X,
 } from "lucide-react";
@@ -26,170 +23,183 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 
+const navClass =
+  "font-display text-[14px] font-bold uppercase tracking-[0.14em] text-foreground/90 hover:text-primary transition-colors md:text-[15px] md:tracking-[0.16em]";
+
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
   const [location] = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const isAdmin = user?.role === "admin" || user?.role === "moderator";
 
-  const navLinks = [
-    { href: "/explore", label: "Explore Clubs" },
+  const centerLinks = [
     { href: "/events", label: "Events" },
-    { href: "/submit", label: "Add Your Club" },
+    { href: "/explore", label: "Clubs" },
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-md border-b border-border shadow-sm">
+    <header className="sticky top-0 z-50 w-full border-b border-[#1a1a1a] bg-[#0a0a0a]">
       <div className="container">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
-              <Trophy className="w-4.5 h-4.5 text-primary-foreground" />
-            </div>
-            <div className="hidden sm:block">
-              <span className="font-display font-bold text-lg bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent leading-none">
-                Treadgram
-              </span>
-              <span className="block text-[10px] text-muted-foreground font-medium leading-none mt-0.5">
-                Your Sports Tribe
-              </span>
-            </div>
+        <div className="flex h-[4.5rem] items-center justify-between gap-3 sm:gap-5 md:h-[5.25rem] md:gap-6">
+          <Link href="/" className="group flex shrink-0 items-center py-1">
+            <img
+              src="/treadgram-logo.png"
+              alt="Treadgram"
+              width={280}
+              height={56}
+              className="h-10 w-auto max-w-[min(260px,52vw)] object-contain object-left transition-[filter] group-hover:brightness-110 sm:h-11 md:h-12 md:max-w-[min(300px,36vw)] lg:h-14"
+            />
           </Link>
 
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => (
+          <nav className="hidden flex-1 items-center justify-center gap-12 md:flex lg:gap-16">
+            {centerLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={cn(
-                  "px-3 py-2 rounded-md text-sm font-medium transition-colors",
-                  location === link.href
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                )}
+                className={cn(navClass, location === link.href && "text-primary")}
               >
                 {link.label}
               </Link>
             ))}
           </nav>
 
-          {/* Right side */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3 sm:gap-4">
             {isAuthenticated ? (
               <>
-                <Button variant="outline" size="sm" asChild className="hidden sm:flex gap-1.5">
+                <Button variant="outline" size="default" asChild className="hidden h-11 px-5 text-[13px] sm:inline-flex">
                   <Link href="/submit">
-                    <Plus className="w-3.5 h-3.5" />
-                    Add Club
+                    <Plus className="size-4" />
+                    Add club
                   </Link>
                 </Button>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="gap-2 pl-2 pr-3">
-                      <Avatar className="w-7 h-7">
-                        <AvatarFallback className="bg-primary/15 text-primary text-xs font-semibold">
+                    <Button
+                      variant="ghost"
+                      className="h-11 gap-2 px-2 font-display text-[13px] font-bold uppercase tracking-[0.12em] md:px-3"
+                    >
+                      <Avatar className="size-10 rounded-none">
+                        <AvatarFallback className="rounded-none bg-secondary text-sm font-bold text-primary">
                           {user?.name?.charAt(0)?.toUpperCase() ?? "U"}
                         </AvatarFallback>
                       </Avatar>
-                      <span className="hidden sm:block text-sm font-medium max-w-24 truncate">
+                      <span className="hidden max-w-[9rem] truncate sm:inline">
                         {user?.name?.split(" ")[0] ?? "Account"}
                       </span>
-                      <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
+                      <ChevronDown className="size-4 text-muted-foreground" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-52">
+                  <DropdownMenuContent align="end" className="w-52 rounded-none border-border bg-card">
                     <DropdownMenuLabel className="font-normal">
                       <div className="flex flex-col gap-0.5">
-                        <span className="font-semibold text-sm">{user?.name}</span>
-                        <span className="text-xs text-muted-foreground truncate">{user?.email}</span>
+                        <span className="text-sm font-semibold">{user?.name}</span>
+                        <span className="truncate text-xs text-muted-foreground">{user?.email}</span>
                       </div>
                     </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
+                    <DropdownMenuSeparator className="bg-border" />
+                    <DropdownMenuItem asChild className="rounded-none focus:bg-secondary">
                       <Link href="/my-clubs" className="flex items-center gap-2">
-                        <User className="w-4 h-4" /> My Clubs
+                        <User className="size-4" /> My clubs
                       </Link>
                     </DropdownMenuItem>
                     {isAdmin && (
-                      <DropdownMenuItem asChild>
+                      <DropdownMenuItem asChild className="rounded-none focus:bg-secondary">
                         <Link href="/admin" className="flex items-center gap-2">
-                          <Shield className="w-4 h-4" /> Admin Dashboard
+                          <Shield className="size-4" /> Admin
                         </Link>
                       </DropdownMenuItem>
                     )}
-                    <DropdownMenuSeparator />
+                    <DropdownMenuSeparator className="bg-border" />
                     <DropdownMenuItem
                       onClick={logout}
-                      className="text-destructive focus:text-destructive flex items-center gap-2"
+                      className="rounded-none text-destructive focus:text-destructive flex items-center gap-2"
                     >
-                      <LogOut className="w-4 h-4" /> Sign Out
+                      <LogOut className="size-4" /> Sign out
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </>
             ) : (
               <>
-                <Button size="sm" variant="ghost" asChild>
-                  <Link href="/signup">Sign Up</Link>
+                <a
+                  href={getLoginUrl()}
+                  className="hidden py-2 font-display text-[13px] font-bold uppercase tracking-[0.14em] text-foreground hover:text-primary sm:inline-block md:text-[14px]"
+                >
+                  Login
+                </a>
+                <Button className="hidden h-11 min-w-[5.5rem] px-6 text-[13px] sm:inline-flex" asChild>
+                  <Link href="/signup">Join</Link>
                 </Button>
-                <Button size="sm" asChild>
-                  <a href={getLoginUrl()}>Sign In</a>
+                <Button className="h-11 min-w-[5rem] px-5 text-[13px] sm:hidden" asChild>
+                  <Link href="/signup">Join</Link>
                 </Button>
               </>
             )}
 
-            {/* Mobile menu toggle */}
             <Button
               variant="ghost"
-              size="icon"
-              className="md:hidden"
+              className="size-11 shrink-0 rounded-none md:hidden"
               onClick={() => setMobileOpen(!mobileOpen)}
+              aria-label="Menu"
             >
-              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {mobileOpen ? <X className="size-6" /> : <Menu className="size-6" />}
             </Button>
           </div>
         </div>
 
-        {/* Mobile nav */}
         {mobileOpen && (
-          <div className="md:hidden border-t border-border py-3 pb-4 space-y-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileOpen(false)}
-                className={cn(
-                  "block px-3 py-2.5 rounded-md text-sm font-medium transition-colors",
-                  location === link.href
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                )}
-              >
-                {link.label}
-              </Link>
-            ))}
-            {isAuthenticated && (
-              <>
+          <div className="border-t border-[#1a1a1a] py-4 md:hidden">
+            <div className="flex flex-col gap-0">
+              {centerLinks.map((link) => (
                 <Link
-                  href="/my-clubs"
+                  key={link.href}
+                  href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className="block px-3 py-2.5 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary"
+                  className={cn(
+                    "px-1 py-4 font-display text-[15px] font-bold uppercase tracking-[0.14em]",
+                    location === link.href ? "text-primary" : "text-foreground/80"
+                  )}
                 >
-                  My Clubs
+                  {link.label}
                 </Link>
-                {isAdmin && (
+              ))}
+              {!isAuthenticated && (
+                <a
+                  href={getLoginUrl()}
+                  className="px-1 py-4 font-display text-[15px] font-bold uppercase tracking-[0.14em] text-foreground/80"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  Login
+                </a>
+              )}
+              {isAuthenticated && (
+                <>
                   <Link
-                    href="/admin"
+                    href="/my-clubs"
                     onClick={() => setMobileOpen(false)}
-                    className="block px-3 py-2.5 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary"
+                    className="px-1 py-4 font-display text-[15px] font-bold uppercase tracking-[0.14em] text-foreground/80"
                   >
-                    Admin Dashboard
+                    My clubs
                   </Link>
-                )}
-              </>
-            )}
+                  <Link
+                    href="/submit"
+                    onClick={() => setMobileOpen(false)}
+                    className="px-1 py-4 font-display text-[15px] font-bold uppercase tracking-[0.14em] text-foreground/80"
+                  >
+                    Add club
+                  </Link>
+                  {isAdmin && (
+                    <Link
+                      href="/admin"
+                      onClick={() => setMobileOpen(false)}
+                      className="px-1 py-4 font-display text-[15px] font-bold uppercase tracking-[0.14em] text-foreground/80"
+                    >
+                      Admin
+                    </Link>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         )}
       </div>

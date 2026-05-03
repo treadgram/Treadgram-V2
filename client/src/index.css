@@ -1,14 +1,16 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Sora:wght@600;700;800&display=swap');
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Barlow Condensed", ui-sans-serif, system-ui, sans-serif;
+  --font-brand: "Bebas Neue", ui-sans-serif, system-ui, sans-serif;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -44,83 +46,84 @@
 }
 
 :root {
-  /* Purple-blue gradient primary for Treadgram */
-  --primary: oklch(0.65 0.20 290);
-  --primary-foreground: oklch(1 0 0);
-  /* Bright cyan/blue accent */
-  --accent: oklch(0.70 0.22 250);
-  --accent-foreground: oklch(0.10 0.02 240);
-  --sidebar-primary: oklch(0.65 0.20 290);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --chart-1: oklch(0.65 0.20 290);
-  --chart-2: oklch(0.70 0.22 250);
-  --chart-3: oklch(0.60 0.18 280);
-  --chart-4: oklch(0.72 0.20 260);
-  --chart-5: oklch(0.68 0.19 300);
-  --radius: 0.5rem;
-  /* Black background */
-  --background: oklch(0.08 0.01 240);
-  /* Light gray foreground for contrast */
-  --foreground: oklch(0.95 0.01 240);
-  /* Dark card with subtle purple tint */
-  --card: oklch(0.12 0.02 280);
-  --card-foreground: oklch(0.95 0.01 240);
-  --popover: oklch(0.12 0.02 280);
-  --popover-foreground: oklch(0.95 0.01 240);
-  /* Dark secondary */
-  --secondary: oklch(0.15 0.02 280);
-  --secondary-foreground: oklch(0.90 0.01 240);
-  --muted: oklch(0.18 0.02 280);
-  --muted-foreground: oklch(0.65 0.02 240);
-  --destructive: oklch(0.60 0.22 25);
-  --destructive-foreground: oklch(1 0 0);
-  /* Dark borders with purple tint */
-  --border: oklch(0.20 0.02 280);
-  --input: oklch(0.20 0.02 280);
-  /* Purple ring for focus states */
-  --ring: oklch(0.65 0.20 290);
-  --sidebar: oklch(0.08 0.01 240);
-  --sidebar-foreground: oklch(0.95 0.01 240);
-  --sidebar-accent: oklch(0.25 0.03 280);
-  --sidebar-accent-foreground: oklch(0.95 0.01 240);
-  --sidebar-border: oklch(0.20 0.02 280);
-  --sidebar-ring: oklch(0.65 0.20 290);
+  --run-red: #ff3a2d;
+  --run-black: #0a0a0a;
+  --run-charcoal: #111111;
+  --run-card: #141414;
+  --run-card-elevated: #181818;
+  --run-border: #1a1a1a;
+  --run-border-strong: #222222;
+  --run-text-muted: #aaaaaa;
+  --run-text-secondary: #888888;
+
+  --primary: #ff3a2d;
+  --primary-foreground: #ffffff;
+  --accent: #1a1a1a;
+  --accent-foreground: #ffffff;
+  --sidebar-primary: #ff3a2d;
+  --sidebar-primary-foreground: #ffffff;
+  --chart-1: #ff3a2d;
+  --chart-2: #ffffff;
+  --chart-3: #888888;
+  --chart-4: #444444;
+  --chart-5: #222222;
+  --radius: 0;
+  --background: #0a0a0a;
+  --foreground: #ffffff;
+  --card: #141414;
+  --card-foreground: #ffffff;
+  --popover: #141414;
+  --popover-foreground: #ffffff;
+  --secondary: #181818;
+  --secondary-foreground: #ffffff;
+  --muted: #111111;
+  --muted-foreground: #aaaaaa;
+  --destructive: #ff3a2d;
+  --destructive-foreground: #ffffff;
+  --border: #1a1a1a;
+  --input: #1a1a1a;
+  --ring: #ff3a2d;
+  --sidebar: #0a0a0a;
+  --sidebar-foreground: #ffffff;
+  --sidebar-accent: #181818;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #1a1a1a;
+  --sidebar-ring: #ff3a2d;
 }
 
 .dark {
-  /* Dark mode is the default for Treadgram */
-  --primary: oklch(0.70 0.22 290);
-  --primary-foreground: oklch(0.08 0.01 240);
-  --accent: oklch(0.75 0.24 250);
-  --accent-foreground: oklch(0.08 0.01 240);
-  --sidebar-primary: oklch(0.70 0.22 290);
-  --sidebar-primary-foreground: oklch(0.08 0.01 240);
-  --background: oklch(0.06 0.01 240);
-  --foreground: oklch(0.98 0.01 240);
-  --card: oklch(0.10 0.02 280);
-  --card-foreground: oklch(0.98 0.01 240);
-  --popover: oklch(0.10 0.02 280);
-  --popover-foreground: oklch(0.98 0.01 240);
-  --secondary: oklch(0.13 0.02 280);
-  --secondary-foreground: oklch(0.92 0.01 240);
-  --muted: oklch(0.16 0.02 280);
-  --muted-foreground: oklch(0.68 0.02 240);
-  --destructive: oklch(0.64 0.22 25);
-  --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.18 0.02 280);
-  --input: oklch(0.18 0.02 280);
-  --ring: oklch(0.70 0.22 290);
-  --chart-1: oklch(0.70 0.22 290);
-  --chart-2: oklch(0.75 0.24 250);
-  --chart-3: oklch(0.65 0.20 280);
-  --chart-4: oklch(0.77 0.22 260);
-  --chart-5: oklch(0.73 0.21 300);
-  --sidebar: oklch(0.06 0.01 240);
-  --sidebar-foreground: oklch(0.98 0.01 240);
-  --sidebar-accent: oklch(0.22 0.03 280);
-  --sidebar-accent-foreground: oklch(0.98 0.01 240);
-  --sidebar-border: oklch(0.18 0.02 280);
-  --sidebar-ring: oklch(0.70 0.22 290);
+  --primary: #ff3a2d;
+  --primary-foreground: #ffffff;
+  --accent: #1a1a1a;
+  --accent-foreground: #ffffff;
+  --sidebar-primary: #ff3a2d;
+  --sidebar-primary-foreground: #ffffff;
+  --background: #0a0a0a;
+  --foreground: #ffffff;
+  --card: #141414;
+  --card-foreground: #ffffff;
+  --popover: #141414;
+  --popover-foreground: #ffffff;
+  --secondary: #181818;
+  --secondary-foreground: #ffffff;
+  --muted: #111111;
+  --muted-foreground: #aaaaaa;
+  --destructive: #ff3a2d;
+  --destructive-foreground: #ffffff;
+  --border: #1a1a1a;
+  --input: #1a1a1a;
+  --ring: #ff3a2d;
+  --chart-1: #ff3a2d;
+  --chart-2: #ffffff;
+  --chart-3: #888888;
+  --chart-4: #444444;
+  --chart-5: #222222;
+  --sidebar: #0a0a0a;
+  --sidebar-foreground: #ffffff;
+  --sidebar-accent: #181818;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #1a1a1a;
+  --sidebar-ring: #ff3a2d;
 }
 
 @layer base {
@@ -128,11 +131,17 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background text-foreground font-sans antialiased text-[15px] leading-relaxed;
+    font-family: var(--font-sans);
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Sora', 'Inter', system-ui, sans-serif;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
   }
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),
@@ -148,24 +157,19 @@
 }
 
 @layer components {
-  /**
-   * Custom container utility that centers content and adds responsive padding.
-   *
-   * This overrides Tailwind's default container behavior to:
-   * - Auto-center content (mx-auto)
-   * - Add responsive horizontal padding
-   * - Set max-width for large screens
-   *
-   * Usage: <div className="container">...</div>
-   *
-   * For custom widths, use max-w-* utilities directly:
-   * <div className="max-w-6xl mx-auto px-4">...</div>
-   */
+  .section-label {
+    @apply font-display text-[11px] font-bold uppercase tracking-[0.14em] text-primary;
+  }
+
+  .heading-hero {
+    @apply font-display font-black uppercase tracking-[-0.02em] text-foreground;
+  }
+
   .container {
     width: 100%;
     margin-left: auto;
     margin-right: auto;
-    padding-left: 1rem; /* 16px - mobile padding */
+    padding-left: 1rem;
     padding-right: 1rem;
   }
 
@@ -176,16 +180,32 @@
 
   @media (min-width: 640px) {
     .container {
-      padding-left: 1.5rem; /* 24px - tablet padding */
+      padding-left: 1.5rem;
       padding-right: 1.5rem;
     }
   }
 
   @media (min-width: 1024px) {
     .container {
-      padding-left: 2rem; /* 32px - desktop padding */
+      padding-left: 2rem;
       padding-right: 2rem;
-      max-width: 1280px; /* Standard content width */
+      max-width: 1280px;
     }
+  }
+
+  @keyframes marquee-x {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    gap: 3rem;
+    animation: marquee-x 22s linear infinite;
   }
 }

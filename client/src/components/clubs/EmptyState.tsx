@@ -20,11 +20,11 @@ export default function EmptyState({
 }: EmptyStateProps) {
   return (
     <div className={cn("flex flex-col items-center justify-center py-16 text-center", className)}>
-      <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
-        {icon ?? <SearchX className="w-8 h-8 text-muted-foreground" />}
+      <div className="mb-4 flex size-16 items-center justify-center border border-[#222222] bg-[#141414]">
+        {icon ?? <SearchX className="size-8 text-muted-foreground" />}
       </div>
-      <h3 className="font-display font-semibold text-lg text-foreground mb-2">{title}</h3>
-      <p className="text-sm text-muted-foreground max-w-sm leading-relaxed mb-6">{description}</p>
+      <h3 className="mb-2 font-display text-xl font-black uppercase tracking-wide text-foreground">{title}</h3>
+      <p className="mb-6 max-w-sm text-[15px] leading-relaxed text-[#aaaaaa]">{description}</p>
       {action && (
         <Button asChild>
           <Link href={action.href}>{action.label}</Link>

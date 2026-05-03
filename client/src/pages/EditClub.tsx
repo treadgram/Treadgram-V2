@@ -233,7 +233,7 @@ export default function EditClub({ params }: EditClubProps) {
                     </div>
                   )}
 
-                  <div className="flex items-center justify-between p-4 rounded-lg border border-border">
+                  <div className="flex items-center justify-between p-4 rounded-none border border-border">
                     <Label className="cursor-pointer">Beginner Friendly</Label>
                     <Switch
                       checked={watch("beginnerFriendly")}
@@ -334,7 +334,7 @@ export default function EditClub({ params }: EditClubProps) {
             {sessions && sessions.length > 0 && (
               <div className="space-y-2">
                 {sessions.map((s) => (
-                  <div key={s.id} className="bg-card border border-border rounded-lg p-4 flex items-center justify-between gap-3">
+                  <div key={s.id} className="bg-card border border-border rounded-none p-4 flex items-center justify-between gap-3">
                     <div>
                       <span className="font-medium text-sm text-foreground">{DAYS_OF_WEEK[s.dayOfWeek]}</span>
                       <span className="text-sm text-muted-foreground ml-2">{s.startTime}{s.endTime ? ` – ${s.endTime}` : ""}</span>
@@ -398,7 +398,7 @@ export default function EditClub({ params }: EditClubProps) {
                     onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
                   />
                 </div>
-                <div className="flex items-center justify-between p-3 rounded-lg border border-border">
+                <div className="flex items-center justify-between p-3 rounded-none border border-border">
                   <Label className="cursor-pointer">Open to all (non-members)</Label>
                   <Switch
                     checked={newEvent.isOpen}
@@ -432,7 +432,7 @@ export default function EditClub({ params }: EditClubProps) {
             {events && events.length > 0 && (
               <div className="space-y-2">
                 {events.map((e) => (
-                  <div key={e.id} className="bg-card border border-border rounded-lg p-4 flex items-center justify-between gap-3">
+                  <div key={e.id} className="bg-card border border-border rounded-none p-4 flex items-center justify-between gap-3">
                     <div>
                       <span className="font-medium text-sm text-foreground">{e.title}</span>
                       <span className="text-xs text-muted-foreground ml-2">

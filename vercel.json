@@ -1,0 +1,5 @@
+{
+  "$schema": "https://vercel.com/schema.json",
+  "installCommand": "pnpm install",
+  "buildCommand": "pnpm run build"
+}

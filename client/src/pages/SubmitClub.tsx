@@ -92,15 +92,16 @@ export default function SubmitClub() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Card className="w-full max-w-md mx-4 shadow-sm">
-          <CardContent className="pt-8 pb-8 text-center">
-            <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
-              <Plus className="w-7 h-7 text-primary" />
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <Card className="mx-4 w-full max-w-md border-[#222222] bg-[#141414]">
+          <CardContent className="px-8 pb-10 pt-10 text-center">
+            <div className="mx-auto mb-4 flex size-14 items-center justify-center border border-primary/40 bg-[#0a0a0a]">
+              <Plus className="size-7 text-primary" />
             </div>
-            <h2 className="font-display text-xl font-bold mb-2">Sign In to Add Your Club</h2>
-            <p className="text-muted-foreground text-sm mb-6">
-              Create an account or sign in to submit your sports club to our directory.
+            <p className="section-label mb-2">// Access</p>
+            <h2 className="font-display text-xl font-black uppercase tracking-wide text-foreground">Sign in to list</h2>
+            <p className="mb-8 mt-3 text-[15px] text-[#aaaaaa]">
+              Create an account or sign in to submit your club to the directory.
             </p>
             <Button asChild className="w-full">
               <a href={getLoginUrl()}>Sign In to Continue</a>
@@ -113,12 +114,13 @@ export default function SubmitClub() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Card className="w-full max-w-md mx-4 shadow-sm">
-          <CardContent className="pt-8 pb-8 text-center">
-            <CheckCircle className="w-14 h-14 text-accent mx-auto mb-4" />
-            <h2 className="font-display text-xl font-bold mb-2">Club Submitted!</h2>
-            <p className="text-muted-foreground text-sm mb-6">
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <Card className="mx-4 w-full max-w-md border-[#222222] bg-[#141414]">
+          <CardContent className="px-8 pb-10 pt-10 text-center">
+            <CheckCircle className="mx-auto mb-4 size-14 text-primary" />
+            <p className="section-label mb-2">// Status</p>
+            <h2 className="font-display text-xl font-black uppercase tracking-wide text-foreground">Club submitted</h2>
+            <p className="mb-8 mt-3 text-[15px] text-[#aaaaaa]">
               Your club has been submitted for review. Our moderators will approve it within 1–2 business days. You'll be able to manage it from your dashboard once approved.
             </p>
             <div className="flex gap-3">
@@ -136,40 +138,50 @@ export default function SubmitClub() {
   }
 
   return (
-    <div className="min-h-screen bg-background py-10">
+    <div className="min-h-screen bg-background py-16 md:py-20">
       <div className="container max-w-2xl">
-        {/* Header */}
-        <div className="mb-8">
-          <Link href="/explore" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-4">
-            <ArrowLeft className="w-3.5 h-3.5" /> Back to Explore
+        <div className="mb-10">
+          <Link
+            href="/explore"
+            className="mb-4 inline-flex items-center gap-2 font-display text-[11px] font-bold uppercase tracking-[0.12em] text-[#888888] transition-colors hover:text-primary"
+          >
+            <ArrowLeft className="size-3.5" /> Back to explore
           </Link>
-          <h1 className="font-display text-2xl font-bold text-foreground">Add Your Sports Club</h1>
-          <p className="text-muted-foreground mt-1">
-            List your club for free on Treadgram and connect with sports enthusiasts across India.
+          <p className="section-label mb-2">// Intake</p>
+          <h1 className="font-display text-3xl font-black uppercase tracking-[-0.02em] text-foreground md:text-4xl">
+            List your <span className="text-primary">club</span>
+          </h1>
+          <p className="mt-3 text-[15px] text-[#aaaaaa]">
+            Free listing on Treadgram. Reach athletes who train, race, and show up.
           </p>
         </div>
 
-        {/* Step indicator */}
-        <div className="flex items-center gap-2 mb-8">
+        <div className="mb-10 flex items-center gap-2">
           {STEPS.map((s, i) => (
-            <div key={s.id} className="flex items-center gap-2 flex-1">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors ${
-                step > s.id ? "bg-accent text-accent-foreground" :
-                step === s.id ? "bg-primary text-primary-foreground" :
-                "bg-muted text-muted-foreground"
-              }`}>
+            <div key={s.id} className="flex flex-1 items-center gap-2">
+              <div
+                className={`flex size-9 items-center justify-center font-display text-sm font-black transition-colors ${
+                  step > s.id
+                    ? "border border-primary bg-primary text-primary-foreground"
+                    : step === s.id
+                      ? "border border-primary bg-[#141414] text-primary"
+                      : "border border-[#222222] bg-[#111111] text-[#888888]"
+                }`}
+              >
                 {step > s.id ? "✓" : s.id}
               </div>
-              <span className={`text-sm font-medium hidden sm:block ${step === s.id ? "text-foreground" : "text-muted-foreground"}`}>
+              <span
+                className={`hidden font-display text-[11px] font-bold uppercase tracking-[0.12em] sm:block ${step === s.id ? "text-foreground" : "text-[#888888]"}`}
+              >
                 {s.label}
               </span>
-              {i < STEPS.length - 1 && <div className="flex-1 h-px bg-border mx-2" />}
+              {i < STEPS.length - 1 && <div className="mx-2 h-px flex-1 bg-[#222222]" />}
             </div>
           ))}
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Card className="shadow-sm">
+          <Card className="border-[#222222] bg-[#141414]">
             {/* Step 1: Basic Info */}
             {step === 1 && (
               <>

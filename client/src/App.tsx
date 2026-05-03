@@ -12,6 +12,7 @@ import CityPage from "./pages/CityPage";
 import SportCityPage from "./pages/SportCityPage";
 import ClubProfile from "./pages/ClubProfile";
 import Events from "./pages/Events";
+import EventDetail from "./pages/EventDetail";
 import SubmitClub from "./pages/SubmitClub";
 import ClaimClub from "./pages/ClaimClub";
 import MyClubs from "./pages/MyClubs";
@@ -48,6 +49,7 @@ function Router() {
       {/* Public discovery */}
       <Route path="/" component={Home} />
       <Route path="/explore" component={Explore} />
+      <Route path="/events/:id">{(params) => <EventDetail params={params} />}</Route>
       <Route path="/events" component={Events} />
 
       {/* SEO-friendly city/sport routes */}
@@ -94,7 +96,7 @@ function Router() {
 function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider defaultTheme="light">
+      <ThemeProvider defaultTheme="dark">
         <TooltipProvider>
           <Toaster position="top-right" richColors />
           <AnalyticsWrapper />

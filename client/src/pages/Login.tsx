@@ -46,10 +46,11 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="container py-12 max-w-md">
-      <div className="rounded-xl border bg-card p-6 shadow-sm">
-        <h1 className="text-2xl font-semibold mb-1">Sign in</h1>
-        <p className="text-sm text-muted-foreground mb-6">
+    <div className="container max-w-md py-16 md:py-24">
+      <div className="border border-[#222222] bg-[#141414] p-8">
+        <p className="section-label mb-3">// Access</p>
+        <h1 className="font-display text-3xl font-black uppercase tracking-[-0.02em] text-foreground">Sign in</h1>
+        <p className="mb-8 mt-3 text-[15px] text-[#aaaaaa]">
           Use your email or phone number with the password you chose at signup.
         </p>
 
@@ -106,9 +107,9 @@ export default function LoginPage() {
           </Button>
         </form>
 
-        <p className="text-sm text-muted-foreground mt-4 text-center">
+        <p className="mt-6 text-center text-[15px] text-[#888888]">
           New here?{" "}
-          <Link href="/signup" className="text-primary font-medium underline underline-offset-2">
+          <Link href="/signup" className="font-display text-[11px] font-bold uppercase tracking-[0.12em] text-primary hover:opacity-90">
             Create an account
           </Link>
         </p>

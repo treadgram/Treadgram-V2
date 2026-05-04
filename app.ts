@@ -1,8 +1,6 @@
 import "dotenv/config";
-import express from "express";
-import { applyExpressMiddleware, attachBuiltClient } from "./server/_core/app";
+import { attachBuiltClient, createApiApp } from "./server/_core/app";
 
-const app = express();
-applyExpressMiddleware(app);
+const app = createApiApp();
 attachBuiltClient(app);
 export default app;

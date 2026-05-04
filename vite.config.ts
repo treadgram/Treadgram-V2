@@ -176,6 +176,7 @@ export default defineConfig({
       ".manus-asia.computer",
       ".manuscomputer.ai",
       ".manusvm.computer",
+      ".vercel.app",
       "localhost",
       "127.0.0.1",
     ],

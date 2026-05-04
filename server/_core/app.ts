@@ -6,6 +6,13 @@ import { createContext } from "./context";
 import { registerOAuthRoutes } from "./oauth";
 import { serveStatic, setupVite } from "./vite";
 
+/** Express app with API routes only (tRPC, OAuth). Use on Vercel serverless; static HTML is served from CDN. */
+export function createApiApp(): Express {
+  const app = express();
+  applyExpressMiddleware(app);
+  return app;
+}
+
 export function applyExpressMiddleware(app: Express): void {
   if (process.env.VERCEL) {
     app.set("trust proxy", 1);

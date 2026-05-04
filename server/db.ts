@@ -28,11 +28,12 @@ export async function getDb() {
       const connectionString = process.env.DATABASE_URL;
       const parsedUrl = new URL(connectionString);
       const isLocalDb = parsedUrl.hostname === "localhost" || parsedUrl.hostname === "127.0.0.1";
-      const needsRelaxedSsl = !isLocalDb && process.env.NODE_ENV !== "production";
+      // Hosted Postgres (Neon, Supabase, RDS, etc.) requires TLS; local sockets typically do not.
+      const ssl = isLocalDb ? false : { rejectUnauthorized: false };
       _pool = new Pool({
         connectionString,
         options: "-c search_path=public",
-        ssl: needsRelaxedSsl ? { rejectUnauthorized: false } : false,
+        ssl,
       });
       _db = drizzle(_pool);
     } catch (error) {

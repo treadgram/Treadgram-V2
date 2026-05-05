@@ -21,6 +21,83 @@ function getRequestOrigin(req: Request): string {
 }
 
 export function registerOAuthRoutes(app: Express) {
+  app.get("/auth/supabase/google", (req: Request, res: Response) => {
+    const supabaseUrl = process.env.SUPABASE_URL;
+    if (!supabaseUrl) {
+      res.status(500).json({ error: "SUPABASE_URL is not configured" });
+      return;
+    }
+
+    const callbackUrl = `${getRequestOrigin(req)}/auth/supabase/callback`;
+    const redirectUrl = new URL("/auth/v1/authorize", supabaseUrl);
+    redirectUrl.searchParams.set("provider", "google");
+    redirectUrl.searchParams.set("redirect_to", callbackUrl);
+    redirectUrl.searchParams.set("scopes", "email profile");
+    res.redirect(302, redirectUrl.toString());
+  });
+
+  app.post("/auth/supabase/session", async (req: Request, res: Response) => {
+    const accessToken = req.body?.accessToken;
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+      res.status(500).json({ error: "SUPABASE_URL and SUPABASE_ANON_KEY must be configured" });
+      return;
+    }
+    if (typeof accessToken !== "string" || accessToken.length === 0) {
+      res.status(400).json({ error: "accessToken is required" });
+      return;
+    }
+
+    try {
+      const userRes = await axios.get(new URL("/auth/v1/user", supabaseUrl).toString(), {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          apikey: supabaseAnonKey,
+          Accept: "application/json",
+        },
+      });
+      const user = userRes.data as {
+        id: string;
+        email?: string | null;
+        user_metadata?: Record<string, unknown>;
+        app_metadata?: Record<string, unknown>;
+      };
+
+      const openId = `supabase_${user.id}`;
+      const name =
+        (typeof user.user_metadata?.full_name === "string" && user.user_metadata.full_name) ||
+        (typeof user.user_metadata?.name === "string" && user.user_metadata.name) ||
+        (typeof user.email === "string" ? user.email.split("@")[0] : "User");
+      const loginMethod =
+        (typeof user.app_metadata?.provider === "string" && user.app_metadata.provider) || "google";
+
+      await db.upsertUser({
+        openId,
+        name,
+        email: user.email ?? null,
+        loginMethod,
+        lastSignedIn: new Date(),
+      });
+
+      const sessionToken = await sdk.createSessionToken(openId, {
+        name,
+        expiresInMs: ONE_YEAR_MS,
+      });
+      const cookieOptions = getSessionCookieOptions(req);
+      res.cookie(COOKIE_NAME, sessionToken, {
+        ...cookieOptions,
+        sameSite: "lax",
+        maxAge: ONE_YEAR_MS,
+      });
+      res.status(200).json({ success: true });
+    } catch (error) {
+      console.error("[OAuth] Supabase session creation failed", error);
+      res.status(500).json({ error: "Supabase auth failed" });
+    }
+  });
+
   app.get("/auth/github", (req: Request, res: Response) => {
     const clientId = process.env.GITHUB_CLIENT_ID;
     if (!clientId) {

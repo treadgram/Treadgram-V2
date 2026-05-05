@@ -110,10 +110,10 @@ export default function LoginPage() {
             variant="outline"
             className="w-full"
             onClick={() => {
-              window.location.href = "/auth/github";
+              window.location.href = "/auth/supabase/google";
             }}
           >
-            Continue with GitHub
+            Continue with Google
           </Button>
         </form>
 

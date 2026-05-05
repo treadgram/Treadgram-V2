@@ -4,10 +4,9 @@
   "buildCommand": "pnpm run build",
   "outputDirectory": "public",
   "rewrites": [
-    { "handle": "filesystem" },
     { "source": "/api/:path*", "destination": "/api" },
     {
-      "source": "/(?!api(?:/|$))(.*)",
+      "source": "/((?!api(?:/|$)|.*\\..*).*)",
       "destination": "/index.html"
     }
   ]

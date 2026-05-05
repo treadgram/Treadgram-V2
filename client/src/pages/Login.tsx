@@ -105,6 +105,16 @@ export default function LoginPage() {
           <Button type="submit" className="w-full" disabled={loginMutation.isPending}>
             {loginMutation.isPending ? "Signing in…" : "Sign in"}
           </Button>
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full"
+            onClick={() => {
+              window.location.href = "/auth/github";
+            }}
+          >
+            Continue with GitHub
+          </Button>
         </form>
 
         <p className="mt-6 text-center text-[15px] text-[#888888]">

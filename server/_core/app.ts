@@ -6,9 +6,20 @@ import { createContext } from "./context";
 import { registerOAuthRoutes } from "./oauth";
 import { serveStatic, setupVite } from "./vite";
 
+let vercelBootLogged = false;
+
 /** Express app with API routes only (tRPC, OAuth). Use on Vercel serverless; static HTML is served from CDN. */
 export function createApiApp(): Express {
   const app = express();
+  if (process.env.VERCEL && !vercelBootLogged) {
+    vercelBootLogged = true;
+    console.log("[treadgram] boot", {
+      NODE_ENV: process.env.NODE_ENV,
+      DATABASE_URL: Boolean(process.env.DATABASE_URL),
+      JWT_SECRET: Boolean(process.env.JWT_SECRET),
+      OAUTH_SERVER_URL: Boolean(process.env.OAUTH_SERVER_URL),
+    });
+  }
   applyExpressMiddleware(app);
   return app;
 }

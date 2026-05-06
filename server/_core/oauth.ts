@@ -21,7 +21,7 @@ function getRequestOrigin(req: Request): string {
 }
 
 export function registerOAuthRoutes(app: Express) {
-  app.get("/auth/supabase/google", (req: Request, res: Response) => {
+  const beginSupabaseGoogleAuth = (req: Request, res: Response) => {
     const supabaseUrl = process.env.SUPABASE_URL;
     if (!supabaseUrl) {
       res.status(500).json({ error: "SUPABASE_URL is not configured" });
@@ -34,9 +34,11 @@ export function registerOAuthRoutes(app: Express) {
     redirectUrl.searchParams.set("redirect_to", callbackUrl);
     redirectUrl.searchParams.set("scopes", "email profile");
     res.redirect(302, redirectUrl.toString());
-  });
+  };
+  app.get("/auth/supabase/google", beginSupabaseGoogleAuth);
+  app.get("/api/auth/supabase/google", beginSupabaseGoogleAuth);
 
-  app.post("/auth/supabase/session", async (req: Request, res: Response) => {
+  const createSupabaseSession = async (req: Request, res: Response) => {
     const accessToken = req.body?.accessToken;
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
@@ -96,7 +98,9 @@ export function registerOAuthRoutes(app: Express) {
       console.error("[OAuth] Supabase session creation failed", error);
       res.status(500).json({ error: "Supabase auth failed" });
     }
-  });
+  };
+  app.post("/auth/supabase/session", createSupabaseSession);
+  app.post("/api/auth/supabase/session", createSupabaseSession);
 
   app.get("/auth/github", (req: Request, res: Response) => {
     const clientId = process.env.GITHUB_CLIENT_ID;

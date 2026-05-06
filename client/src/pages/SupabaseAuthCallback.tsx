@@ -28,7 +28,7 @@ export default function SupabaseAuthCallbackPage() {
       }
 
       try {
-        const res = await fetch("/auth/supabase/session", {
+        const res = await fetch("/api/auth/supabase/session", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",

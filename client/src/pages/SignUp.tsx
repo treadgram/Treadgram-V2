@@ -186,6 +186,16 @@ export default function SignUpPage() {
                 <Button type="submit" className="w-full" size="lg" disabled={signupMutation.isPending}>
                   {signupMutation.isPending ? "Creating account…" : "Create account"}
                 </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => {
+                    window.location.href = "/api/auth/supabase/google";
+                  }}
+                >
+                  Continue with Google
+                </Button>
               </form>
 
               <p className="mt-6 text-center text-[15px] text-[#888888]">

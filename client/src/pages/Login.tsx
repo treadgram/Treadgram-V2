@@ -110,7 +110,7 @@ export default function LoginPage() {
             variant="outline"
             className="w-full"
             onClick={() => {
-              window.location.href = "/auth/supabase/google";
+              window.location.href = "/api/auth/supabase/google";
             }}
           >
             Continue with Google

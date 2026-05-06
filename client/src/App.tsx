@@ -23,6 +23,7 @@ import SignUpPage from "./pages/SignUp";
 import SystemAdminLogin from "./pages/SystemAdminLogin";
 import SystemConsole from "./pages/SystemConsole";
 import SupabaseAuthCallbackPage from "./pages/SupabaseAuthCallback";
+import OAuthConsentPage from "./pages/OAuthConsent";
 import { useAnalytics } from "./hooks/useAnalytics";
 
 // Analytics wrapper that tracks page views on every route change
@@ -76,6 +77,7 @@ function Router() {
       <Route path="/auth/login" component={LoginPage} />
       <Route path="/auth/signup" component={SignUpPage} />
       <Route path="/auth/supabase/callback" component={SupabaseAuthCallbackPage} />
+      <Route path="/oauth/consent" component={OAuthConsentPage} />
       <Route path="/submit" component={SubmitClub} />
       <Route path="/clubs/:slug/claim">
         {(params) => <ClaimClub params={params} />}

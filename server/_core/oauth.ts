@@ -1,6 +1,6 @@
 import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 import axios from "axios";
-import type { Express, Request, Response } from "express";
+import type { Application, Request, Response } from "express";
 import * as db from "../db";
 import { getSessionCookieOptions } from "./cookies";
 import { sdk } from "./sdk";
@@ -20,7 +20,7 @@ function getRequestOrigin(req: Request): string {
   return `${proto}://${host}`;
 }
 
-export function registerOAuthRoutes(app: Express) {
+export function registerOAuthRoutes(app: Application) {
   const beginSupabaseGoogleAuth = (req: Request, res: Response) => {
     const supabaseUrl = process.env.SUPABASE_URL;
     if (!supabaseUrl) {

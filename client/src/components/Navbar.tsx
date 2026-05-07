@@ -35,6 +35,7 @@ export default function Navbar() {
   const centerLinks = [
     { href: "/events", label: "Events" },
     { href: "/explore", label: "Clubs" },
+    { href: "/fit-purse", label: "Fit Purse" },
   ];
 
   return (

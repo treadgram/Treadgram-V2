@@ -3,10 +3,20 @@ import fs from "fs";
 import { type Server } from "http";
 import { nanoid } from "nanoid";
 import path from "path";
-import { createServer as createViteServer } from "vite";
+import { createServer as createViteServer, type InlineConfig } from "vite";
 import viteConfig from "../../vite.config";
 
 export async function setupVite(app: Express, server: Server) {
+  const baseConfig: InlineConfig =
+    typeof viteConfig === "function"
+      ? await viteConfig({
+          command: "serve",
+          mode: process.env.NODE_ENV === "production" ? "production" : "development",
+          isSsrBuild: false,
+          isPreview: false,
+        })
+      : viteConfig;
+
   const serverOptions = {
     middlewareMode: true,
     hmr: { server },
@@ -14,7 +24,7 @@ export async function setupVite(app: Express, server: Server) {
   };
 
   const vite = await createViteServer({
-    ...viteConfig,
+    ...baseConfig,
     configFile: false,
     server: serverOptions,
     appType: "custom",
@@ -23,6 +33,15 @@ export async function setupVite(app: Express, server: Server) {
   app.use(vite.middlewares);
   app.use("*", async (req, res, next) => {
     const url = req.originalUrl;
+    const pathname = req.path;
+
+    // Let Vite serve module/asset/HMR requests; only HTML navigations should fall back to index.html.
+    const isViteInternal = pathname.startsWith("/@vite") || pathname.startsWith("/@fs");
+    const isSourceModule = pathname.startsWith("/src/") || pathname.startsWith("/node_modules/");
+    const hasFileExtension = /\.[a-zA-Z0-9]+$/.test(pathname);
+    if (isViteInternal || isSourceModule || hasFileExtension) {
+      return next();
+    }
 
     try {
       const clientTemplate = path.resolve(

@@ -10,15 +10,14 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Skeleton } from "../components/ui/skeleton";
 
-const HERO_IMAGE =
-  "https://images.unsplash.com/photo-1552674605-46d536d23227?auto=format&fit=crop&w=2400&q=80";
+const HERO_IMAGE = "/hero-run-organize-dominate.png";
 
 const TICKER_ITEMS = [
   "MARATHONS",
   "TRAIL RUNS",
   "CORPORATE MEETS",
   "CITY LEAGUES",
-  "NIGHT RUNS",
+  "COUCH TO 5K",
   "ULTRA SERIES",
 ];
 
@@ -71,11 +70,11 @@ export default function Home() {
     <div className="min-h-screen bg-background">
       <section className="relative flex min-h-[100dvh] flex-col">
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat brightness-110"
           style={{ backgroundImage: `url(${HERO_IMAGE})` }}
           aria-hidden
         />
-        <div className="absolute inset-0 bg-black/55" aria-hidden />
+        <div className="absolute inset-0 bg-black/40" aria-hidden />
 
         <div className="relative z-10 flex min-h-[100dvh] flex-1 flex-col px-0">
           <div className="container flex flex-1 flex-col pt-10 pb-12 md:pt-14 md:pb-20">
@@ -95,19 +94,19 @@ export default function Home() {
                 Dominate.
               </h1>
 
-              <p className="max-w-lg text-[15px] leading-relaxed text-[#aaaaaa] md:text-[16px]">
+              <p className="max-w-lg text-[15px] leading-relaxed text-white md:text-[16px]">
                 Treadgram is the command center for crews and race directors. Discover verified clubs, lock in
-                events, and own your city&apos;s running scene — one listing, one calendar, zero noise.
+                events, and own your city&apos;s running scene one listing, one calendar, zero noise.
               </p>
             </div>
 
             <div className="mt-auto flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-end sm:gap-5">
-              <Button size="lg" className="min-h-12 w-full sm:w-auto" asChild>
+              <Button size="lg" className="mt-2 min-h-12 w-full sm:w-auto" asChild>
                 <Link href="/signup">
                   Join the movement <span aria-hidden>→</span>
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="min-h-12 w-full border-white sm:w-auto" asChild>
+              <Button size="lg" variant="outline" className="mt-2 min-h-12 w-full border-white sm:w-auto" asChild>
                 <Link href="/events">Browse events</Link>
               </Button>
             </div>
@@ -124,24 +123,31 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="border-b border-[#1a1a1a] bg-black py-16 md:py-24">
+      <section className="border-b border-[#1a1a1a] bg-[#111111] py-20 md:py-28">
         <div className="container">
-          <div className="flex flex-col divide-y divide-[#222] border border-[#222] md:flex-row md:divide-x md:divide-y-0">
-            {[
-              { n: "5000+", l: "ACTIVE RUNNERS" },
-              { n: "8", l: "CITIES COVERED" },
-              { n: "50+", l: "CLUBS ONBOARDED" },
-            ].map((s) => (
-              <div key={s.l} className="flex flex-1 flex-col px-6 py-10 md:py-12">
-                <div className="border-l-[3px] border-primary pl-5">
-                  <div className="font-display text-[clamp(2.5rem,6vw,4rem)] font-black uppercase leading-none tracking-[-0.02em] text-white">
-                    {s.n}
+          <p className="section-label mb-3">// 04 — Cities</p>
+          <h2 className="font-display text-3xl font-black uppercase tracking-[-0.02em] text-foreground md:text-4xl">
+            Browse by <span className="text-primary">city</span>
+          </h2>
+          <div className="mt-10 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
+            {featuredCities.map((city) => (
+              <Link
+                key={city.key}
+                href={`/india/${city.key}`}
+                className="group border border-[#222222] bg-[#141414] p-5 transition-[filter,border-color] hover:border-primary"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <div className="font-display text-base font-bold uppercase tracking-wide text-foreground transition-colors group-hover:text-primary">
+                      {city.label}
+                    </div>
+                    <div className="mt-1 font-display text-[10px] font-bold uppercase tracking-[0.14em] text-[#888888]">
+                      {city.state}
+                    </div>
                   </div>
-                  <div className="mt-3 font-display text-[12px] font-bold uppercase tracking-[0.16em] text-[#666666]">
-                    {s.l}
-                  </div>
+                  <MapPin className="size-4 shrink-0 text-[#888888] transition-colors group-hover:text-primary" />
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -247,36 +253,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="border-b border-[#1a1a1a] bg-[#111111] py-20 md:py-28">
-        <div className="container">
-          <p className="section-label mb-3">// 04 — Cities</p>
-          <h2 className="font-display text-3xl font-black uppercase tracking-[-0.02em] text-foreground md:text-4xl">
-            Browse by <span className="text-primary">city</span>
-          </h2>
-          <div className="mt-10 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
-            {featuredCities.map((city) => (
-              <Link
-                key={city.key}
-                href={`/india/${city.key}`}
-                className="group border border-[#222222] bg-[#141414] p-5 transition-[filter,border-color] hover:border-primary"
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <div className="font-display text-base font-bold uppercase tracking-wide text-foreground transition-colors group-hover:text-primary">
-                      {city.label}
-                    </div>
-                    <div className="mt-1 font-display text-[10px] font-bold uppercase tracking-[0.14em] text-[#888888]">
-                      {city.state}
-                    </div>
-                  </div>
-                  <MapPin className="size-4 shrink-0 text-[#888888] transition-colors group-hover:text-primary" />
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section className="py-20 md:py-28">
         <div className="container">
           <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -312,6 +288,29 @@ export default function Home() {
               action={{ label: "List your club", href: "/submit" }}
             />
           )}
+        </div>
+      </section>
+
+      <section className="border-t border-[#1a1a1a] border-b border-[#1a1a1a] bg-black py-16 md:py-24">
+        <div className="container">
+          <div className="flex flex-col divide-y divide-[#222] border border-[#222] md:flex-row md:divide-x md:divide-y-0">
+            {[
+              { n: "5000+", l: "ACTIVE RUNNERS" },
+              { n: "8", l: "CITIES COVERED" },
+              { n: "50+", l: "CLUBS ONBOARDED" },
+            ].map((s) => (
+              <div key={s.l} className="flex flex-1 flex-col px-6 py-10 md:py-12">
+                <div className="border-l-[3px] border-primary pl-5">
+                  <div className="font-display text-[clamp(2.5rem,6vw,4rem)] font-black uppercase leading-none tracking-[-0.02em] text-white">
+                    {s.n}
+                  </div>
+                  <div className="mt-3 font-display text-[12px] font-bold uppercase tracking-[0.16em] text-[#666666]">
+                    {s.l}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

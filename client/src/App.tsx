@@ -24,6 +24,7 @@ import SystemAdminLogin from "./pages/SystemAdminLogin";
 import SystemConsole from "./pages/SystemConsole";
 import SupabaseAuthCallbackPage from "./pages/SupabaseAuthCallback";
 import OAuthConsentPage from "./pages/OAuthConsent";
+import FitPursePage from "./pages/FitPurse";
 import { useAnalytics } from "./hooks/useAnalytics";
 
 // Analytics wrapper that tracks page views on every route change
@@ -53,6 +54,7 @@ function Router() {
       <Route path="/explore" component={Explore} />
       <Route path="/events/:id">{(params) => <EventDetail params={params} />}</Route>
       <Route path="/events" component={Events} />
+      <Route path="/fit-purse" component={FitPursePage} />
 
       {/* SEO-friendly city/sport routes */}
       <Route path="/india/:city">

@@ -150,9 +150,13 @@ function vitePluginManusDebugCollector(): Plugin {
   };
 }
 
-const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(), vitePluginManusDebugCollector()];
+export default defineConfig(({ mode }) => {
+  const plugins = [react(), tailwindcss(), jsxLocPlugin()];
+  if (mode !== "production") {
+    plugins.push(vitePluginManusRuntime(), vitePluginManusDebugCollector());
+  }
 
-export default defineConfig({
+  return {
   plugins,
   resolve: {
     alias: {
@@ -196,4 +200,5 @@ export default defineConfig({
       deny: ["**/.*"],
     },
   },
+};
 });

@@ -1,16 +1,35 @@
 import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 import axios from "axios";
-import type { Application, Request, Response } from "express";
 import * as db from "../db";
 import { getSessionCookieOptions } from "./cookies";
 import { sdk } from "./sdk";
 
-function getQueryParam(req: Request, key: string): string | undefined {
+type RequestLike = {
+  query: Record<string, unknown>;
+  headers: Record<string, string | string[] | undefined>;
+  protocol: string;
+  body?: { accessToken?: unknown } | null;
+  get(name: string): string | undefined;
+};
+
+type ResponseLike = {
+  status(code: number): ResponseLike;
+  json(body: unknown): void;
+  redirect(statusCode: number, url: string): void;
+  cookie(name: string, value: string, options: Record<string, unknown>): void;
+};
+
+type AppLike = {
+  get(path: string, handler: (req: RequestLike, res: ResponseLike) => void | Promise<void>): void;
+  post(path: string, handler: (req: RequestLike, res: ResponseLike) => void | Promise<void>): void;
+};
+
+function getQueryParam(req: RequestLike, key: string): string | undefined {
   const value = req.query[key];
   return typeof value === "string" ? value : undefined;
 }
 
-function getRequestOrigin(req: Request): string {
+function getRequestOrigin(req: RequestLike): string {
   const forwardedProto = req.headers["x-forwarded-proto"];
   const forwardedHost = req.headers["x-forwarded-host"];
   const proto =
@@ -20,8 +39,8 @@ function getRequestOrigin(req: Request): string {
   return `${proto}://${host}`;
 }
 
-export function registerOAuthRoutes(app: Application) {
-  const beginSupabaseGoogleAuth = (req: Request, res: Response) => {
+export function registerOAuthRoutes(app: AppLike) {
+  const beginSupabaseGoogleAuth = (req: RequestLike, res: ResponseLike) => {
     const supabaseUrl = process.env.SUPABASE_URL;
     if (!supabaseUrl) {
       res.status(500).json({ error: "SUPABASE_URL is not configured" });
@@ -38,7 +57,7 @@ export function registerOAuthRoutes(app: Application) {
   app.get("/auth/supabase/google", beginSupabaseGoogleAuth);
   app.get("/api/auth/supabase/google", beginSupabaseGoogleAuth);
 
-  const createSupabaseSession = async (req: Request, res: Response) => {
+  const createSupabaseSession = async (req: RequestLike, res: ResponseLike) => {
     const accessToken = req.body?.accessToken;
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
@@ -102,7 +121,7 @@ export function registerOAuthRoutes(app: Application) {
   app.post("/auth/supabase/session", createSupabaseSession);
   app.post("/api/auth/supabase/session", createSupabaseSession);
 
-  app.get("/auth/github", (req: Request, res: Response) => {
+  app.get("/auth/github", (req: RequestLike, res: ResponseLike) => {
     const clientId = process.env.GITHUB_CLIENT_ID;
     if (!clientId) {
       res.status(500).json({ error: "GITHUB_CLIENT_ID is not configured" });
@@ -119,7 +138,7 @@ export function registerOAuthRoutes(app: Application) {
     res.redirect(302, redirectUrl.toString());
   });
 
-  app.get("/auth/github/callback", async (req: Request, res: Response) => {
+  app.get("/auth/github/callback", async (req: RequestLike, res: ResponseLike) => {
     const code = getQueryParam(req, "code");
     const clientId = process.env.GITHUB_CLIENT_ID;
     const clientSecret = process.env.GITHUB_CLIENT_SECRET;
@@ -199,7 +218,7 @@ export function registerOAuthRoutes(app: Application) {
     }
   });
 
-  app.get("/api/oauth/callback", async (req: Request, res: Response) => {
+  app.get("/api/oauth/callback", async (req: RequestLike, res: ResponseLike) => {
     const code = getQueryParam(req, "code");
     const state = getQueryParam(req, "state");
 

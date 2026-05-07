@@ -1,4 +1,4 @@
-import express, { type Express } from "express";
+import express from "express";
 import fs from "fs";
 import { type Server } from "http";
 import { nanoid } from "nanoid";
@@ -6,7 +6,7 @@ import path from "path";
 import { createServer as createViteServer, type InlineConfig } from "vite";
 import viteConfig from "../../vite.config";
 
-export async function setupVite(app: Express, server: Server) {
+export async function setupVite(app: any, server: Server) {
   const baseConfig: InlineConfig =
     typeof viteConfig === "function"
       ? await viteConfig({
@@ -31,7 +31,7 @@ export async function setupVite(app: Express, server: Server) {
   });
 
   app.use(vite.middlewares);
-  app.use("*", async (req, res, next) => {
+  app.use("*", async (req: any, res: any, next: (err?: unknown) => void) => {
     const url = req.originalUrl;
     const pathname = req.path;
 
@@ -66,7 +66,7 @@ export async function setupVite(app: Express, server: Server) {
   });
 }
 
-export function serveStatic(app: Express) {
+export function serveStatic(app: any) {
   const distPath = path.resolve(process.cwd(), "public");
   if (!fs.existsSync(distPath)) {
     console.error(
@@ -79,7 +79,7 @@ export function serveStatic(app: Express) {
     app.use(express.static(distPath));
   }
 
-  app.use("*", (_req, res) => {
+  app.use("*", (_req: unknown, res: any) => {
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 }

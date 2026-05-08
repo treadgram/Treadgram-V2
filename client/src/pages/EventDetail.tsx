@@ -140,7 +140,7 @@ export default function EventDetail({ params }: Props) {
                 <InfoCell
                   icon={<MapPin className="size-5 text-primary" />}
                   label="LOCATION"
-                  value={row.locationName || row.clubCityLabel}
+                  value={row.area ? `${row.locationName || row.clubCityLabel}, ${row.area}` : (row.locationName || row.clubCityLabel)}
                 />
                 <InfoCell
                   icon={<Users className="size-5 text-primary" />}

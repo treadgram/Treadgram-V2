@@ -1,6 +1,7 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
+import { useEffect } from "react";
 import { Route, Switch, useLocation } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -99,12 +100,29 @@ function Router() {
   );
 }
 
+function AuthHashRedirector() {
+  useEffect(() => {
+    const hash = window.location.hash.startsWith("#")
+      ? window.location.hash.slice(1)
+      : window.location.hash;
+    const hashParams = new URLSearchParams(hash);
+    if (!hashParams.get("access_token")) return;
+    if (window.location.pathname === "/auth/supabase/callback") return;
+
+    const callbackUrl = `/auth/supabase/callback${window.location.hash}`;
+    window.location.replace(callbackUrl);
+  }, []);
+
+  return null;
+}
+
 function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="dark">
         <TooltipProvider>
           <Toaster position="top-right" richColors />
+          <AuthHashRedirector />
           <AnalyticsWrapper />
           <Layout>
             <Router />

@@ -7,15 +7,7 @@ import { createServer as createViteServer, type InlineConfig } from "vite";
 import viteConfig from "../../vite.config";
 
 export async function setupVite(app: any, server: Server) {
-  const baseConfig: InlineConfig =
-    typeof viteConfig === "function"
-      ? await viteConfig({
-          command: "serve",
-          mode: process.env.NODE_ENV === "production" ? "production" : "development",
-          isSsrBuild: false,
-          isPreview: false,
-        })
-      : viteConfig;
+  const baseConfig: InlineConfig = viteConfig as InlineConfig;
 
   const serverOptions = {
     middlewareMode: true,

@@ -51,6 +51,11 @@ export default function Events() {
                       <div className="flex flex-wrap items-start justify-between gap-2">
                         <h3 className="font-display text-lg font-bold uppercase tracking-wide text-foreground">{event.title}</h3>
                         <div className="flex flex-wrap items-center gap-2">
+                          {event.area && (
+                            <span className="border border-[#333333] bg-[#0a0a0a] px-2 py-1 font-display text-[10px] font-bold uppercase tracking-[0.12em] text-[#d0d0d0]">
+                              {event.area}
+                            </span>
+                          )}
                           {event.isOpen && (
                             <span className="border border-emerald-800 bg-emerald-950/40 px-2 py-1 font-display text-[10px] font-bold uppercase tracking-[0.12em] text-emerald-400">
                               Open to all

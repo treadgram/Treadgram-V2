@@ -50,6 +50,7 @@ const eventSchema = z.object({
   title: z.string().min(3),
   datetimeUtc: z.string().min(1),
   locationName: z.string().optional(),
+  area: z.string().optional(),
   description: z.string().optional(),
   isOpen: z.boolean(),
   registrationUrl: z.string().url().optional().or(z.literal("")),
@@ -128,7 +129,7 @@ export default function EditClub({ params }: EditClubProps) {
     onSuccess: () => {
       toast.success("Event added!");
       utils.events.upcoming.invalidate({ clubId });
-      setNewEvent({ title: "", datetimeUtc: "", locationName: "", description: "", isOpen: true, registrationUrl: "" });
+      setNewEvent({ title: "", datetimeUtc: "", locationName: "", area: "", description: "", isOpen: true, registrationUrl: "" });
     },
     onError: (e) => toast.error(e.message),
   });
@@ -145,7 +146,7 @@ export default function EditClub({ params }: EditClubProps) {
     dayOfWeek: 0, startTime: "", endTime: "", locationName: "", notes: "",
   });
   const [newEvent, setNewEvent] = useState({
-    title: "", datetimeUtc: "", locationName: "", description: "", isOpen: true, registrationUrl: "",
+    title: "", datetimeUtc: "", locationName: "", area: "", description: "", isOpen: true, registrationUrl: "",
   });
 
   const pricingType = watch("pricingType");
@@ -388,6 +389,14 @@ export default function EditClub({ params }: EditClubProps) {
                       onChange={(e) => setNewEvent({ ...newEvent, locationName: e.target.value })}
                     />
                   </div>
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Area (optional)</Label>
+                  <Input
+                    placeholder="e.g. Adyar"
+                    value={newEvent.area}
+                    onChange={(e) => setNewEvent({ ...newEvent, area: e.target.value })}
+                  />
                 </div>
                 <div className="space-y-1.5">
                   <Label>Description</Label>

@@ -382,6 +382,7 @@ export async function listUpcomingEventsForFeed(limit = 12) {
       lat: events.lat,
       lng: events.lng,
       locationName: events.locationName,
+      area: events.area,
       registrationUrl: events.registrationUrl,
       maxParticipants: events.maxParticipants,
       createdAt: events.createdAt,
@@ -411,6 +412,7 @@ export async function getEventWithClubById(id: number) {
       lat: events.lat,
       lng: events.lng,
       locationName: events.locationName,
+      area: events.area,
       registrationUrl: events.registrationUrl,
       maxParticipants: events.maxParticipants,
       createdAt: events.createdAt,
@@ -653,6 +655,7 @@ export async function listEventsForAdmin(filters: AdminEventListFilters = {}) {
         ilike(events.title, q),
         ilike(events.description, q),
         ilike(events.locationName, q),
+        ilike(events.area, q),
         ilike(clubs.name, q),
         ilike(clubs.slug, q)
       )!
@@ -671,6 +674,7 @@ export async function listEventsForAdmin(filters: AdminEventListFilters = {}) {
         lat: events.lat,
         lng: events.lng,
         locationName: events.locationName,
+        area: events.area,
         registrationUrl: events.registrationUrl,
         maxParticipants: events.maxParticipants,
         createdAt: events.createdAt,

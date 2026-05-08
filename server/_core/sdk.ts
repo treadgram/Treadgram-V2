@@ -12,7 +12,7 @@ import type {
   GetUserInfoResponse,
   GetUserInfoWithJwtRequest,
   GetUserInfoWithJwtResponse,
-} from "./types/manusTypes";
+} from "./types/oauthTypes";
 // Utility function
 const isNonEmptyString = (value: unknown): value is string =>
   typeof value === "string" && value.length > 0;
@@ -28,14 +28,7 @@ const GET_USER_INFO_PATH = `/webdev.v1.WebDevAuthPublicService/GetUserInfo`;
 const GET_USER_INFO_WITH_JWT_PATH = `/webdev.v1.WebDevAuthPublicService/GetUserInfoWithJwt`;
 
 class OAuthService {
-  constructor(private client: ReturnType<typeof axios.create>) {
-    console.log("[OAuth] Initialized with baseURL:", ENV.oAuthServerUrl);
-    if (!ENV.oAuthServerUrl) {
-      console.error(
-        "[OAuth] ERROR: OAUTH_SERVER_URL is not configured! Set OAUTH_SERVER_URL environment variable."
-      );
-    }
-  }
+  constructor(private client: ReturnType<typeof axios.create>) {}
 
   private decodeState(state: string): string {
     const redirectUri = atob(state);
@@ -83,11 +76,20 @@ const createOAuthHttpClient = (): AxiosInstance =>
 
 class SDKServer {
   private readonly client: AxiosInstance;
-  private readonly oauthService: OAuthService;
+  private oauthService: OAuthService | null = null;
 
   constructor(client: AxiosInstance = createOAuthHttpClient()) {
     this.client = client;
-    this.oauthService = new OAuthService(this.client);
+  }
+
+  private getOAuthService(): OAuthService {
+    if (!ENV.oAuthServerUrl) {
+      throw new Error("Legacy OAuth is disabled: OAUTH_SERVER_URL is not configured");
+    }
+    if (!this.oauthService) {
+      this.oauthService = new OAuthService(this.client);
+    }
+    return this.oauthService;
   }
 
   private deriveLoginMethod(
@@ -121,7 +123,7 @@ class SDKServer {
     code: string,
     state: string
   ): Promise<ExchangeTokenResponse> {
-    return this.oauthService.getTokenByCode(code, state);
+    return this.getOAuthService().getTokenByCode(code, state);
   }
 
   /**
@@ -130,7 +132,7 @@ class SDKServer {
    * const userInfo = await sdk.getUserInfo(tokenResponse.accessToken);
    */
   async getUserInfo(accessToken: string): Promise<GetUserInfoResponse> {
-    const data = await this.oauthService.getUserInfoByToken({
+    const data = await this.getOAuthService().getUserInfoByToken({
       accessToken,
     } as ExchangeTokenResponse);
     const loginMethod = this.deriveLoginMethod(
@@ -159,7 +161,7 @@ class SDKServer {
   }
 
   /**
-   * Create a session token for a Manus user openId
+   * Create a session token for an OAuth user openId.
    * @example
    * const sessionToken = await sdk.createSessionToken(userInfo.openId);
    */
@@ -200,7 +202,6 @@ class SDKServer {
     cookieValue: string | undefined | null
   ): Promise<{ openId: string; appId: string; name: string } | null> {
     if (!cookieValue) {
-      console.warn("[Auth] Missing session cookie");
       return null;
     }
 

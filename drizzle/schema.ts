@@ -130,6 +130,7 @@ export const events = pgTable("events", {
   lat: real("lat"),
   lng: real("lng"),
   locationName: varchar("locationName", { length: 256 }),
+  area: varchar("area", { length: 64 }),
   registrationUrl: varchar("registrationUrl", { length: 512 }),
   maxParticipants: integer("maxParticipants"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),

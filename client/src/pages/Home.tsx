@@ -199,6 +199,13 @@ export default function Home() {
                           {badge}
                         </span>
                       </div>
+                      {e.area && (
+                        <div className="absolute right-3 top-3 z-10">
+                          <span className="border border-[#3a3a3a] bg-black/70 px-2.5 py-1 font-display text-[10px] font-bold uppercase tracking-[0.12em] text-white">
+                            {e.area}
+                          </span>
+                        </div>
+                      )}
                       <div className="absolute bottom-0 left-0 right-0 z-10 p-4 pt-16">
                         <p className="font-display text-[11px] font-bold uppercase tracking-[0.18em] text-[#aaaaaa]">
                           {city}

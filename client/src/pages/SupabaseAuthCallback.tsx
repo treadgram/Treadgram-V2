@@ -13,6 +13,18 @@ function getAccessTokenFromUrl(): string | null {
   return queryParams.get("access_token");
 }
 
+function getOAuthErrorFromUrl(): string | null {
+  const hash = window.location.hash.startsWith("#")
+    ? window.location.hash.slice(1)
+    : window.location.hash;
+  const hashParams = new URLSearchParams(hash);
+  const hashError = hashParams.get("error_description") || hashParams.get("error");
+  if (hashError) return hashError;
+
+  const queryParams = new URLSearchParams(window.location.search);
+  return queryParams.get("error_description") || queryParams.get("error");
+}
+
 export default function SupabaseAuthCallbackPage() {
   const [, navigate] = useLocation();
   const [error, setError] = useState<string | null>(null);
@@ -21,13 +33,23 @@ export default function SupabaseAuthCallbackPage() {
     let cancelled = false;
 
     const run = async () => {
+      const oauthError = getOAuthErrorFromUrl();
+      if (oauthError) {
+        setError(oauthError);
+        return;
+      }
+
       const accessToken = getAccessTokenFromUrl();
       if (!accessToken) {
-        setError("Missing access token from Supabase callback.");
+        setError(
+          "Missing access token from Supabase callback. Check Supabase redirect URL settings and retry."
+        );
         return;
       }
 
       try {
+        // Scrub tokens from URL as soon as we read them.
+        window.history.replaceState({}, document.title, "/auth/supabase/callback");
         const res = await fetch("/api/auth/supabase/session", {
           method: "POST",
           headers: { "Content-Type": "application/json" },

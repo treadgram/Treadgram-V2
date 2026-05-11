@@ -7,6 +7,7 @@ dist/
 /public/
 build/
 *.dist
+api/index.js
 
 # Environment variables
 .env
@@ -110,3 +111,6 @@ temp/
 # Webdev artifacts (checkpoint zips, migrations, etc.)
 .webdev/
 .vercel
+
+# Automation tool logs
+.manus-logs/

@@ -44,7 +44,7 @@ A production-ready web app for discovering running clubs and other sports clubs 
 └─────────────────────────────────────────────────────────────────┘
                             │ Google Maps Proxy
 ┌───────────────────────────▼─────────────────────────────────────┐
-│              Maps (Manus Google Maps Proxy)                     │
+│              Maps (Google Maps via configured proxy)            │
 │  MapView component · Geocoding · Places · Directions            │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -215,15 +215,15 @@ Required variables:
 |---|---|
 | `DATABASE_URL` | MySQL connection string: `mysql://user:pass@host:3306/dbname` |
 | `JWT_SECRET` | Random secret for session cookie signing (min 32 chars) |
-| `VITE_APP_ID` | Manus OAuth application ID |
-| `OAUTH_SERVER_URL` | Manus OAuth backend base URL |
-| `VITE_OAUTH_PORTAL_URL` | Manus login portal URL |
-| `OWNER_OPEN_ID` | Owner's Manus OpenID (gets auto-promoted to admin) |
+| `VITE_APP_ID` | OAuth application / project ID |
+| `OAUTH_SERVER_URL` | OAuth backend base URL |
+| `VITE_OAUTH_PORTAL_URL` | Login portal URL |
+| `OWNER_OPEN_ID` | Owner OpenID (auto-promoted to admin) |
 | `OWNER_NAME` | Owner's display name |
-| `BUILT_IN_FORGE_API_URL` | Manus built-in APIs URL (server-side) |
-| `BUILT_IN_FORGE_API_KEY` | Manus built-in APIs bearer token (server-side) |
-| `VITE_FRONTEND_FORGE_API_URL` | Manus built-in APIs URL (frontend) |
-| `VITE_FRONTEND_FORGE_API_KEY` | Manus built-in APIs bearer token (frontend) |
+| `BUILT_IN_FORGE_API_URL` | Built-in / forge API base URL (server-side) |
+| `BUILT_IN_FORGE_API_KEY` | Built-in / forge API bearer token (server-side) |
+| `VITE_FRONTEND_FORGE_API_URL` | Built-in / forge API URL (frontend) |
+| `VITE_FRONTEND_FORGE_API_KEY` | Built-in / forge API bearer token (frontend) |
 
 ### 3. Run database migrations
 
@@ -342,11 +342,7 @@ Analytics are viewable in the Admin Dashboard under the Analytics tab.
 
 ## Deployment
 
-This project is hosted on Manus with built-in MySQL database. To deploy:
-
-1. Create a checkpoint via the Management UI
-2. Click **Publish** in the Management UI header
-3. Configure a custom domain in Settings → Domains (optional)
+See **Docker (any cloud)** below for a self-hosted path. Point your process manager or platform at the built `dist/` output and set the same environment variables as in local development.
 
 ### Docker (any cloud)
 

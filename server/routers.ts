@@ -23,6 +23,15 @@ import { eventsRouter } from "./routers/events";
 import { reviewsRouter } from "./routers/reviews";
 import { sessionsRouter } from "./routers/sessions";
 
+type CookieCapableResponse = {
+  cookie(name: string, value: string, options?: Record<string, unknown>): void;
+  clearCookie(name: string, options?: Record<string, unknown>): void;
+};
+
+function withCookieResponse(res: unknown): CookieCapableResponse {
+  return res as CookieCapableResponse;
+}
+
 function timingSafeStringEqual(a: string, b: string): boolean {
   try {
     const ba = Buffer.from(a, "utf8");
@@ -90,7 +99,7 @@ export const appRouter = router({
 
         const sessionToken = await sdk.createSessionToken(openId, { name });
         const cookieOptions = getSessionCookieOptions(ctx.req);
-        ctx.res.cookie(COOKIE_NAME, sessionToken, {
+        withCookieResponse(ctx.res).cookie(COOKIE_NAME, sessionToken, {
           ...cookieOptions,
           maxAge: 1000 * 60 * 60 * 24 * 365,
         });
@@ -134,7 +143,7 @@ export const appRouter = router({
           name: user.name ?? "User",
         });
         const cookieOptions = getSessionCookieOptions(ctx.req);
-        ctx.res.cookie(COOKIE_NAME, sessionToken, {
+        withCookieResponse(ctx.res).cookie(COOKIE_NAME, sessionToken, {
           ...cookieOptions,
           maxAge: 1000 * 60 * 60 * 24 * 365,
         });
@@ -143,7 +152,7 @@ export const appRouter = router({
       }),
     logout: publicProcedure.mutation(({ ctx }) => {
       const cookieOptions = getSessionCookieOptions(ctx.req);
-      ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
+      withCookieResponse(ctx.res).clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
       return { success: true } as const;
     }),
     /** Owner-only login for `/system` console (credentials from env, not public signup). */
@@ -188,7 +197,7 @@ export const appRouter = router({
 
         const sessionToken = await sdk.createSessionToken(openId, { name: "System Owner" });
         const cookieOptions = getSessionCookieOptions(ctx.req);
-        ctx.res.cookie(COOKIE_NAME, sessionToken, {
+        withCookieResponse(ctx.res).cookie(COOKIE_NAME, sessionToken, {
           ...cookieOptions,
           maxAge: 1000 * 60 * 60 * 24 * 365,
         });
@@ -228,3 +237,4 @@ export const appRouter = router({
 });
 
 export type AppRouter = typeof appRouter;
+

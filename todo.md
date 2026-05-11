@@ -29,14 +29,14 @@
 
 ## Phase 5: Club Profile Page
 - [x] /clubs/:slug — full club profile page
-- [x] Map integration (Google Maps via Manus proxy)
+- [x] Map integration (Google Maps via configured proxy)
 - [x] Weekly schedule display
 - [x] Upcoming events list
 - [x] Reviews section with star ratings
 - [x] Instagram / WhatsApp contact links with analytics tracking
 
 ## Phase 6: Auth Flows
-- [x] Login via Manus OAuth (email/password + magic link)
+- [x] Login via OAuth (email/password + magic link)
 - [x] Protected route wrapper (redirects to login)
 - [x] User profile menu in navbar
 

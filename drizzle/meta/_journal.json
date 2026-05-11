@@ -8,6 +8,13 @@
       "when": 1777656844666,
       "tag": "0000_soft_psynapse",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1777656844667,
+      "tag": "0001_event_area",
+      "breakpoints": true
     }
   ]
 }

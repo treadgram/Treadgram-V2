@@ -1,15 +1,13 @@
-import express, { type Express } from "express";
-import type { Server } from "http";
+import express from "express";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { registerOAuthRoutes } from "./oauth";
-import { serveStatic, setupVite } from "./vite";
 
 let vercelBootLogged = false;
 
 /** Express app with API routes only (tRPC, OAuth). Use on Vercel serverless; static HTML is served from CDN. */
-export function createApiApp(): Express {
+export function createApiApp() {
   const app = express();
   if (process.env.VERCEL && !vercelBootLogged) {
     vercelBootLogged = true;
@@ -17,14 +15,14 @@ export function createApiApp(): Express {
       NODE_ENV: process.env.NODE_ENV,
       DATABASE_URL: Boolean(process.env.DATABASE_URL),
       JWT_SECRET: Boolean(process.env.JWT_SECRET),
-      OAUTH_SERVER_URL: Boolean(process.env.OAUTH_SERVER_URL),
+      SUPABASE_URL: Boolean(process.env.SUPABASE_URL),
     });
   }
   applyExpressMiddleware(app);
   return app;
 }
 
-export function applyExpressMiddleware(app: Express): void {
+export function applyExpressMiddleware(app: any): void {
   if (process.env.VERCEL) {
     app.set("trust proxy", 1);
   }
@@ -38,17 +36,4 @@ export function applyExpressMiddleware(app: Express): void {
       createContext,
     })
   );
-}
-
-/** Serves the Vite production build from `./public` (and SPA fallback). */
-export function attachBuiltClient(app: Express): void {
-  serveStatic(app);
-}
-
-export async function finishAppSetup(app: Express, httpServer: Server | null): Promise<void> {
-  if (process.env.NODE_ENV === "development" && httpServer) {
-    await setupVite(app, httpServer);
-  } else {
-    attachBuiltClient(app);
-  }
 }

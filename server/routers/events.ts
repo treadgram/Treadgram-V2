@@ -21,6 +21,7 @@ const EventInputSchema = z.object({
   lat: z.number().optional(),
   lng: z.number().optional(),
   locationName: z.string().max(256).optional(),
+  area: z.string().max(64).optional(),
   registrationUrl: z.string().url().optional().or(z.literal("")),
   maxParticipants: z.number().int().positive().optional(),
 });
@@ -59,6 +60,7 @@ export const eventsRouter = router({
       lat: input.lat ?? null,
       lng: input.lng ?? null,
       locationName: input.locationName ?? null,
+      area: input.area ?? null,
       registrationUrl: input.registrationUrl || null,
       maxParticipants: input.maxParticipants ?? null,
     });
@@ -76,6 +78,7 @@ export const eventsRouter = router({
         lat: rest.lat ?? null,
         lng: rest.lng ?? null,
         locationName: rest.locationName ?? null,
+        area: rest.area ?? null,
         registrationUrl: rest.registrationUrl || null,
         maxParticipants: rest.maxParticipants ?? null,
       });

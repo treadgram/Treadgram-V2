@@ -266,7 +266,12 @@ export default function ClubProfile({ params }: ClubProfileProps) {
                   <div className="space-y-3">
                     {events.map((event) => (
                       <Link key={event.id} href={`/events/${event.id}`} className="block">
-                        <div className="flex items-start gap-3 p-3 rounded-none border border-border transition-colors hover:border-primary">
+                        <div className="relative flex items-start gap-3 p-3 rounded-none border border-border transition-colors hover:border-primary">
+                        {event.area && (
+                          <span className="absolute right-3 top-3 rounded-none border border-[#333] bg-[#101010] px-2 py-0.5 font-display text-[10px] font-bold uppercase tracking-[0.1em] text-[#d0d0d0]">
+                            {event.area}
+                          </span>
+                        )}
                         <div className="w-12 h-12 rounded-none bg-primary/10 flex flex-col items-center justify-center shrink-0">
                           <span className="text-xs font-bold text-primary">
                             {new Date(event.datetimeUtc).toLocaleDateString("en-IN", { day: "2-digit" })}

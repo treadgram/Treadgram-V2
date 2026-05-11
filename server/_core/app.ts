@@ -1,10 +1,8 @@
 import express from "express";
-import type { Server } from "http";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { registerOAuthRoutes } from "./oauth";
-import { serveStatic, setupVite } from "./vite";
 
 let vercelBootLogged = false;
 
@@ -17,7 +15,7 @@ export function createApiApp() {
       NODE_ENV: process.env.NODE_ENV,
       DATABASE_URL: Boolean(process.env.DATABASE_URL),
       JWT_SECRET: Boolean(process.env.JWT_SECRET),
-      OAUTH_SERVER_URL: Boolean(process.env.OAUTH_SERVER_URL),
+      SUPABASE_URL: Boolean(process.env.SUPABASE_URL),
     });
   }
   applyExpressMiddleware(app);
@@ -38,16 +36,4 @@ export function applyExpressMiddleware(app: any): void {
       createContext,
     })
   );
-}
-
-export function attachBuiltClient(app: any): void {
-  serveStatic(app);
-}
-
-export async function finishAppSetup(app: any, httpServer: Server | null): Promise<void> {
-  if (process.env.NODE_ENV === "development" && httpServer) {
-    await setupVite(app, httpServer);
-  } else {
-    attachBuiltClient(app);
-  }
 }

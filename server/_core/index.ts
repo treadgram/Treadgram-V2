@@ -1,7 +1,8 @@
 import "dotenv/config";
 import { createServer } from "http";
 import net from "net";
-import { createApiApp, finishAppSetup } from "./app";
+import { createApiApp } from "./app";
+import { finishAppSetup } from "./devServer";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {

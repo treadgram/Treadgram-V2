@@ -7,6 +7,7 @@ dist/
 /public/
 build/
 *.dist
+api/_bundle.js
 
 # Environment variables
 .env

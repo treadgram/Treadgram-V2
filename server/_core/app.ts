@@ -15,7 +15,8 @@ export function createApiApp() {
       NODE_ENV: process.env.NODE_ENV,
       DATABASE_URL: Boolean(process.env.DATABASE_URL),
       JWT_SECRET: Boolean(process.env.JWT_SECRET),
-      SUPABASE_URL: Boolean(process.env.SUPABASE_URL),
+      WORKOS_API_KEY: Boolean(process.env.WORKOS_API_KEY),
+      WORKOS_CLIENT_ID: Boolean(process.env.WORKOS_CLIENT_ID),
     });
   }
   applyExpressMiddleware(app);

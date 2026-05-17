@@ -1,14 +1,14 @@
 import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
-import axios from "axios";
+import { WorkOS } from "@workos-inc/node";
 import * as db from "../db";
 import { getSessionCookieOptions } from "./cookies";
+import { ENV } from "./env";
 import { sdk } from "./sdk";
 
 type RequestLike = {
   query: Record<string, unknown>;
   headers: Record<string, string | string[] | undefined>;
   protocol: string;
-  body?: { accessToken?: unknown } | null;
   get(name: string): string | undefined;
 };
 
@@ -21,13 +21,7 @@ type ResponseLike = {
 
 type AppLike = {
   get(path: string, handler: (req: RequestLike, res: ResponseLike) => void | Promise<void>): void;
-  post(path: string, handler: (req: RequestLike, res: ResponseLike) => void | Promise<void>): void;
 };
-
-function getQueryParam(req: RequestLike, key: string): string | undefined {
-  const value = req.query[key];
-  return typeof value === "string" ? value : undefined;
-}
 
 function getRequestOrigin(req: RequestLike): string {
   const forwardedProto = req.headers["x-forwarded-proto"];
@@ -39,165 +33,66 @@ function getRequestOrigin(req: RequestLike): string {
   return `${proto}://${host}`;
 }
 
+function getQueryParam(req: RequestLike, key: string): string | undefined {
+  const value = req.query[key];
+  return typeof value === "string" ? value : undefined;
+}
+
+let workosClient: WorkOS | null = null;
+function getWorkos(): WorkOS {
+  if (!workosClient) workosClient = new WorkOS(ENV.workosApiKey);
+  return workosClient;
+}
+
+function resolveRedirectUri(req: RequestLike): string {
+  return ENV.workosRedirectUri || `${getRequestOrigin(req)}/api/auth/workos/callback`;
+}
+
 export function registerOAuthRoutes(app: AppLike) {
-  const beginSupabaseGoogleAuth = (req: RequestLike, res: ResponseLike) => {
-    const supabaseUrl = process.env.SUPABASE_URL;
-    if (!supabaseUrl) {
-      res.status(500).json({ error: "SUPABASE_URL is not configured" });
+  app.get("/api/auth/workos/start", (req: RequestLike, res: ResponseLike) => {
+    if (!ENV.workosApiKey || !ENV.workosClientId) {
+      res.status(500).json({ error: "WORKOS_API_KEY and WORKOS_CLIENT_ID must be configured" });
       return;
     }
-
-    const callbackUrl = `${getRequestOrigin(req)}/auth/supabase/callback`;
-    const redirectUrl = new URL("/auth/v1/authorize", supabaseUrl);
-    redirectUrl.searchParams.set("provider", "google");
-    redirectUrl.searchParams.set("redirect_to", callbackUrl);
-    redirectUrl.searchParams.set("scopes", "email profile");
-    res.redirect(302, redirectUrl.toString());
-  };
-  app.get("/auth/supabase/google", beginSupabaseGoogleAuth);
-  app.get("/api/auth/supabase/google", beginSupabaseGoogleAuth);
-
-  const createSupabaseSession = async (req: RequestLike, res: ResponseLike) => {
-    const accessToken = req.body?.accessToken;
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
-
-    if (!supabaseUrl || !supabaseAnonKey) {
-      res.status(500).json({ error: "SUPABASE_URL and SUPABASE_ANON_KEY must be configured" });
-      return;
-    }
-    if (typeof accessToken !== "string" || accessToken.length === 0) {
-      res.status(400).json({ error: "accessToken is required" });
-      return;
-    }
-
-    try {
-      const userRes = await axios.get(new URL("/auth/v1/user", supabaseUrl).toString(), {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          apikey: supabaseAnonKey,
-          Accept: "application/json",
-        },
-      });
-      const user = userRes.data as {
-        id: string;
-        email?: string | null;
-        user_metadata?: Record<string, unknown>;
-        app_metadata?: Record<string, unknown>;
-      };
-
-      const openId = `supabase_${user.id}`;
-      const name =
-        (typeof user.user_metadata?.full_name === "string" && user.user_metadata.full_name) ||
-        (typeof user.user_metadata?.name === "string" && user.user_metadata.name) ||
-        (typeof user.email === "string" ? user.email.split("@")[0] : "User");
-      const loginMethod =
-        (typeof user.app_metadata?.provider === "string" && user.app_metadata.provider) || "google";
-
-      await db.upsertUser({
-        openId,
-        name,
-        email: user.email ?? null,
-        loginMethod,
-        lastSignedIn: new Date(),
-      });
-
-      const sessionToken = await sdk.createSessionToken(openId, {
-        name,
-        expiresInMs: ONE_YEAR_MS,
-      });
-      const cookieOptions = getSessionCookieOptions(req);
-      res.cookie(COOKIE_NAME, sessionToken, {
-        ...cookieOptions,
-        sameSite: "lax",
-        maxAge: ONE_YEAR_MS,
-      });
-      res.status(200).json({ success: true });
-    } catch (error) {
-      console.error("[OAuth] Supabase session creation failed", error);
-      res.status(500).json({ error: "Supabase auth failed" });
-    }
-  };
-  app.post("/auth/supabase/session", createSupabaseSession);
-  app.post("/api/auth/supabase/session", createSupabaseSession);
-
-  app.get("/auth/github", (req: RequestLike, res: ResponseLike) => {
-    const clientId = process.env.GITHUB_CLIENT_ID;
-    if (!clientId) {
-      res.status(500).json({ error: "GITHUB_CLIENT_ID is not configured" });
-      return;
-    }
-
-    const callbackUrl =
-      process.env.GITHUB_CALLBACK_URL || `${getRequestOrigin(req)}/auth/github/callback`;
-    const redirectUrl = new URL("https://github.com/login/oauth/authorize");
-    redirectUrl.searchParams.set("client_id", clientId);
-    redirectUrl.searchParams.set("redirect_uri", callbackUrl);
-    redirectUrl.searchParams.set("scope", "read:user user:email");
-
-    res.redirect(302, redirectUrl.toString());
+    const authorizationUrl = getWorkos().userManagement.getAuthorizationUrl({
+      provider: "authkit",
+      clientId: ENV.workosClientId,
+      redirectUri: resolveRedirectUri(req),
+    });
+    res.redirect(302, authorizationUrl);
   });
 
-  app.get("/auth/github/callback", async (req: RequestLike, res: ResponseLike) => {
+  app.get("/api/auth/workos/callback", async (req: RequestLike, res: ResponseLike) => {
     const code = getQueryParam(req, "code");
-    const clientId = process.env.GITHUB_CLIENT_ID;
-    const clientSecret = process.env.GITHUB_CLIENT_SECRET;
-
     if (!code) {
       res.status(400).json({ error: "code is required" });
       return;
     }
-    if (!clientId || !clientSecret) {
-      res
-        .status(500)
-        .json({ error: "GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET must be configured" });
+    if (!ENV.workosApiKey || !ENV.workosClientId) {
+      res.status(500).json({ error: "WORKOS_API_KEY and WORKOS_CLIENT_ID must be configured" });
       return;
     }
 
     try {
-      const callbackUrl =
-        process.env.GITHUB_CALLBACK_URL || `${getRequestOrigin(req)}/auth/github/callback`;
-      const payload = new URLSearchParams({
-        client_id: clientId,
-        client_secret: clientSecret,
+      const { user } = await getWorkos().userManagement.authenticateWithCode({
         code,
-        redirect_uri: callbackUrl,
+        clientId: ENV.workosClientId,
       });
-      const tokenRes = await axios.post("https://github.com/login/oauth/access_token", payload, {
-        headers: { Accept: "application/json" },
-      });
-      const accessToken = tokenRes.data?.access_token as string | undefined;
-      if (!accessToken) {
-        res.status(400).json({ error: "GitHub token exchange failed" });
-        return;
-      }
 
-      const userRes = await axios.get("https://api.github.com/user", {
-        headers: { Authorization: `Bearer ${accessToken}`, Accept: "application/json" },
-      });
-      const user = userRes.data as {
-        id: number;
-        login: string;
-        name?: string | null;
-        email?: string | null;
-      };
-      let email: string | null = user.email ?? null;
-      if (!email) {
-        const emailRes = await axios.get("https://api.github.com/user/emails", {
-          headers: { Authorization: `Bearer ${accessToken}`, Accept: "application/json" },
-        });
-        const emails = emailRes.data as Array<{ email: string; primary: boolean; verified: boolean }>;
-        email = emails.find((e) => e.primary && e.verified)?.email ?? emails[0]?.email ?? null;
-      }
+      const openId = `workos_${user.id}`;
+      const name =
+        [user.firstName, user.lastName].filter(Boolean).join(" ").trim() ||
+        user.email.split("@")[0];
+      const adminEmail = ENV.systemAdminEmail.trim().toLowerCase();
+      const isOwner = adminEmail.length > 0 && user.email.trim().toLowerCase() === adminEmail;
 
-      const openId = `github_${user.id}`;
-      const name = user.name?.trim() || user.login;
       await db.upsertUser({
         openId,
         name,
-        email,
-        loginMethod: "github",
+        email: user.email,
+        loginMethod: "workos",
         lastSignedIn: new Date(),
+        ...(isOwner ? { role: "admin" as const } : {}),
       });
 
       const sessionToken = await sdk.createSessionToken(openId, {
@@ -207,15 +102,13 @@ export function registerOAuthRoutes(app: AppLike) {
       const cookieOptions = getSessionCookieOptions(req);
       res.cookie(COOKIE_NAME, sessionToken, {
         ...cookieOptions,
-        // OAuth redirect callback is same-site navigation and works better with Lax.
         sameSite: "lax",
         maxAge: ONE_YEAR_MS,
       });
-      res.redirect(302, "/");
+      res.redirect(302, isOwner ? "/system" : "/");
     } catch (error) {
-      console.error("[OAuth] GitHub callback failed", error);
-      res.status(500).json({ error: "GitHub OAuth callback failed" });
+      console.error("[OAuth] WorkOS callback failed", error);
+      res.status(500).json({ error: "WorkOS auth failed" });
     }
   });
-
 }

@@ -20,7 +20,7 @@ export default function OAuthConsentPage() {
           <Button
             className="w-full"
             onClick={() => {
-              window.location.href = "/api/auth/supabase/google";
+              window.location.href = "/api/auth/workos/start";
             }}
           >
             Continue

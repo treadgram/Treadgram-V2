@@ -1,7 +1,6 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
-import { useEffect } from "react";
 import { Route, Switch, useLocation } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -20,10 +19,7 @@ import MyClubs from "./pages/MyClubs";
 import EditClub from "./pages/EditClub";
 import AdminDashboard from "./pages/AdminDashboard";
 import LoginPage from "./pages/Login";
-import SignUpPage from "./pages/SignUp";
-import SystemAdminLogin from "./pages/SystemAdminLogin";
 import SystemConsole from "./pages/SystemConsole";
-import SupabaseAuthCallbackPage from "./pages/SupabaseAuthCallback";
 import OAuthConsentPage from "./pages/OAuthConsent";
 import FitPursePage from "./pages/FitPurse";
 import { useAnalytics } from "./hooks/useAnalytics";
@@ -70,16 +66,14 @@ function Router() {
         {(params) => <ClubProfile params={params} />}
       </Route>
 
-      {/* Owner system console (separate login) */}
-      <Route path="/system/login" component={SystemAdminLogin} />
+      {/* Owner system console (uses same AuthKit flow; admin granted by email match) */}
       <Route path="/system" component={SystemConsole} />
 
       {/* Club admin */}
       <Route path="/login" component={LoginPage} />
-      <Route path="/signup" component={SignUpPage} />
+      <Route path="/signup" component={LoginPage} />
       <Route path="/auth/login" component={LoginPage} />
-      <Route path="/auth/signup" component={SignUpPage} />
-      <Route path="/auth/supabase/callback" component={SupabaseAuthCallbackPage} />
+      <Route path="/auth/signup" component={LoginPage} />
       <Route path="/oauth/consent" component={OAuthConsentPage} />
       <Route path="/submit" component={SubmitClub} />
       <Route path="/clubs/:slug/claim">
@@ -100,29 +94,12 @@ function Router() {
   );
 }
 
-function AuthHashRedirector() {
-  useEffect(() => {
-    const hash = window.location.hash.startsWith("#")
-      ? window.location.hash.slice(1)
-      : window.location.hash;
-    const hashParams = new URLSearchParams(hash);
-    if (!hashParams.get("access_token")) return;
-    if (window.location.pathname === "/auth/supabase/callback") return;
-
-    const callbackUrl = `/auth/supabase/callback${window.location.hash}`;
-    window.location.replace(callbackUrl);
-  }, []);
-
-  return null;
-}
-
 function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="dark">
         <TooltipProvider>
           <Toaster position="top-right" richColors />
-          <AuthHashRedirector />
           <AnalyticsWrapper />
           <Layout>
             <Router />
